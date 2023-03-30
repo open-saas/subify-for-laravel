@@ -1,57 +1,54 @@
 {
-    "name": "lucasdotvin/laravel-soulbscription",
-    "description": "A straightforward interface to handle subscriptions and features consumption.",
+    "name": "open-saas/laravel-subify",
+    "description": "A straightforward way to handle subscriptions in Laravel.",
     "keywords": [
-        "lucasdotvin",
+        "open-saas",
         "laravel",
-        "laravel-soulbscription",
-        "subscriptions"
+        "laravel-subify",
+        "subscriptions",
+        "subscription",
+        "plans",
+        "plan"
     ],
-    "homepage": "https://github.com/lucasdotvin/laravel-soulbscription",
+    "homepage": "https://github.com/open-saas/laravel-subify",
     "license": "MIT",
     "authors": [
         {
             "name": "Lucas Vinicius",
-            "email": "lucasvinicius211@yahoo.com",
+            "email": "himself@lucas.vin",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.0|^8.1",
-        "illuminate/contracts": "^8.0|^9.0"
+        "php": "^8.1",
+        "illuminate/container": "^10.0",
+        "illuminate/contracts": "^10.0",
+        "illuminate/database": "^10.0"
     },
     "require-dev": {
-        "lucasdotvin/laravel-database-queries-counter": "^0.5.0",
-        "orchestra/testbench": "^6.22|^7.0",
-        "phpunit/phpunit": "^9.5",
-        "squizlabs/php_codesniffer": "*"
+        "orchestra/testbench": "^8.1",
+        "phpunit/phpunit": "^10.0.7"
     },
     "autoload": {
         "psr-4": {
-            "LucasDotVin\\Soulbscription\\": "src",
-            "LucasDotVin\\Soulbscription\\Database\\Factories\\": "database/factories"
+            "OpenSaaS\\Subify\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LucasDotVin\\Soulbscription\\Tests\\": "tests"
+            "OpenSaaS\\Subify\\Tests\\": "tests"
         }
     },
     "scripts": {
-        "analyse": "vendor/bin/phpcs --standard=phpcs.xml",
-        "test": "vendor/bin/phpunit"
+        "test": "phpunit"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "phpstan/extension-installer": false
-        }
+        "sort-packages": true
     },
     "extra": {
         "laravel": {
             "providers": [
-                "LucasDotVin\\Soulbscription\\SoulbscriptionServiceProvider"
+                "OpenSaaS\\Subify\\SubifyServiceProvider"
             ],
             "aliases": {}
         }
