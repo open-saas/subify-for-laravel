@@ -8,6 +8,12 @@
 
 A straightforward interface to handle subscriptions and benefits consumption.
 
+## Terminology
+
+We have opted to use the term "benefit" rather than "feature" due to its broader scope. While a feature may be a benefit, benefits can include aspects such as quotas or limits.
+
+Therefore, by referring to "benefits" we aim to encompass all elements subscribers receive by signing to a plan.
+
 ## Development Status
 
 - [ ] Subscription Plans
