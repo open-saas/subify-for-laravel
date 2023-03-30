@@ -6,7 +6,7 @@
 
 ## About
 
-A straightforward interface to handle subscriptions and benefits consumption.
+A straightforward way to handle subscriptions in Laravel.
 
 ## Terminology
 
