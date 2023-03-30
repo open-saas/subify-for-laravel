@@ -18,6 +18,7 @@ Therefore, by referring to "benefits" we aim to encompass all elements subscribe
 
 - [ ] Subscription Plans
   - [ ] Create, edit, and delete subscription plans
+  - [ ] Free plans
   - [ ] Set billing intervals (monthly, yearly, etc.)
   - [ ] Define benefits and limits for each plan
   - [ ] Offer free trials and promotions
