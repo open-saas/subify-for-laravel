@@ -6,7 +6,35 @@
 
 ## About
 
-A straightforward interface to handle subscriptions and features consumption.
+A straightforward interface to handle subscriptions and benefits consumption.
+
+## Development Status
+
+- [ ] Subscription Plans
+  - [ ] Create, edit, and delete subscription plans
+  - [ ] Set billing intervals (monthly, yearly, etc.)
+  - [ ] Define benefits and limits for each plan
+  - [ ] Offer free trials and promotions
+  - [ ] Multiple subscription plans per subscriber
+  - [ ] Pricing and discounts
+- [ ] Benefits
+  - [ ] Create, edit, and delete benefits
+  - [ ] Periodicity (for example, daily, weekly, monthly, etc.)
+  - [ ] Consumable benefits (for example, 1000 API calls per month)
+  - [ ] Non-consumable benefits (they should work like feature flags: either you have it or you don't)
+  - [ ] Quota-based benefits (for example, 10GB of storage)
+- [ ] Benefit Tickets
+  - [ ] Create, edit, and delete benefit tickets
+  - [ ] Define benefits and limits for each ticket
+  - [ ] Pricing and discounts
+- [ ] Usage and Limit Management
+  - [ ] Track usage of benefits by subscribers
+  - [ ] Enforce limits based on subscription plans
+  - [ ] Provide usage analytics and reports
+- [ ] Multi-tenancy
+  - [ ] Support for multiple subscribers
+  - [ ] Support for multiple subscription plans
+  - [ ] Support for multiple benefit tickets 
 
 ## Testing
 
