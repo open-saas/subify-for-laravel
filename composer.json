@@ -41,7 +41,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "OpenSaaS\\Subify\\Tests\\": "tests"
+            "Tests\\": "tests"
         }
     },
     "scripts": {
