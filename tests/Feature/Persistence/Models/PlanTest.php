@@ -21,4 +21,18 @@ class PlanTest extends TestCase
             'name' => $plan->name,
         ]);
     }
+
+    public function test_it_soft_deletes(): void
+    {
+        $plan = Plan::create([
+            'name' => 'Test Plan',
+        ]);
+
+        $plan->delete();
+
+        $this->assertSoftDeleted('plans', [
+            'id' => $plan->id,
+            'name' => $plan->name,
+        ]);
+    }
 }
