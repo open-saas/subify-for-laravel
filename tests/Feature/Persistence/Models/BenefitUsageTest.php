@@ -56,4 +56,85 @@ class BenefitUsageTest extends TestCase
 
         $this->assertEquals($benefit->id, $benefitUsage->benefit->id);
     }
+
+    public function test_it_has_a_global_scope_to_only_return_not_expired(): void
+    {
+        $benefit = Benefit::factory()->create();
+
+        $expiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->subDays(30),
+            ]);
+
+        $notExpiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->addDays(30),
+            ]);
+
+        $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => null,
+            ]);
+
+        $this->assertEmpty(BenefitUsage::find($expiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::find($notExpiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::find($benefitUsageWithoutExpiredAt->id));
+    }
+
+    public function test_it_has_a_scope_to_only_return_expired(): void
+    {
+        $benefit = Benefit::factory()->create();
+
+        $expiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->subDays(30),
+            ]);
+
+        $notExpiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->addDays(30),
+            ]);
+
+        $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => null,
+            ]);
+
+        $this->assertNotEmpty(BenefitUsage::onlyExpired()->find($expiredBenefitUsage->id));
+        $this->assertEmpty(BenefitUsage::onlyExpired()->find($notExpiredBenefitUsage->id));
+        $this->assertEmpty(BenefitUsage::onlyExpired()->find($benefitUsageWithoutExpiredAt->id));
+    }
+
+    public function test_it_has_a_scope_to_return_with_expired(): void
+    {
+        $benefit = Benefit::factory()->create();
+
+        $expiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->subDays(30),
+            ]);
+
+        $notExpiredBenefitUsage = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => now()->addDays(30),
+            ]);
+
+        $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
+            ->for($benefit)
+            ->create([
+                'expired_at' => null,
+            ]);
+
+        $this->assertNotEmpty(BenefitUsage::withExpired()->find($expiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::withExpired()->find($notExpiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::withExpired()->find($benefitUsageWithoutExpiredAt->id));
+    }
 }
