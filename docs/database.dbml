@@ -1,0 +1,97 @@
+Table benefits {
+  id integer [primary key]
+  name string
+  is_consumable bool
+  is_quota bool
+  periodicity integer [null]
+  periodicity_unit string [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    name [unique]
+  }
+}
+
+Table benefit_usages {
+  id integer [primary key]
+  benefit_id integer
+  amount decimal
+  subscriber_id string
+  subscriber_type string
+  expired_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (subscriber_id, subscriber_type)
+    (benefit_id, subscriber_id, subscriber_type)
+  }
+}
+
+Ref: benefits.id < benefit_usages.benefit_id
+
+Table plans {
+  id integer [primary key]
+  name string
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table plan_regimes {
+  id integer [primary key]
+  plan_id integer
+  name string [null]
+  price decimal [null]
+  periodicity integer [null]
+  periodicity_unit string [null]
+  grace integer [null]
+  grace_unit string [null]
+  trial integer [null]
+  trial_unit string [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (name) [unique]
+  }
+}
+
+Ref: plans.id < plan_regimes.plan_id
+
+Table benefit_plan {
+  id integer [primary key]
+  benefit_id integer
+  plan_id integer
+  charges decimal
+  is_unlimited bool
+
+  indexes {
+    (benefit_id, plan_id) [unique]
+  }
+}
+
+Ref: benefits.id < benefit_plan.benefit_id
+Ref: plans.id < benefit_plan.plan_id
+
+Table subscriptions {
+  id integer [primary key]
+  subscriber_id string
+  subscriber_type string
+  grace_ended_at timestamp [null]
+  trial_ended_at timestamp [null]
+  renewed_at timestamp [null]
+  expired_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+  plan_id integer
+  plan_regime_id integer
+
+  indexes {
+    (subscriber_id, subscriber_type)
+    (plan_id, subscriber_id, subscriber_type) [unique]
+  }
+}
+
+Ref: subscriptions.plan_id > plans.id
+Ref: subscriptions.plan_regime_id > plan_regimes.id
