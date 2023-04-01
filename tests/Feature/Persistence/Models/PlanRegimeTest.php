@@ -46,34 +46,11 @@ class PlanRegimeTest extends TestCase
 
     public function test_it_soft_deletes(): void
     {
-        $plan = Plan::factory()->create();
-
-        $planRegime = PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        $planRegime = PlanRegime::factory()->create();
 
         $planRegime->delete();
 
-        $this->assertSoftDeleted('plan_regimes', [
-            'id' => $planRegime->id,
-            'plan_id' => $plan->id,
-            'name' => $planRegime->name,
-            'price' => $planRegime->price,
-            'periodicity' => $planRegime->periodicity,
-            'periodicity_unit' => $planRegime->periodicity_unit,
-            'grace' => $planRegime->grace,
-            'grace_unit' => $planRegime->grace_unit,
-            'trial' => $planRegime->trial,
-            'trial_unit' => $planRegime->trial_unit,
-        ]);
+        $this->assertSoftDeleted($planRegime);
     }
 
     public function test_it_belongs_to_a_plan(): void
@@ -100,19 +77,8 @@ class PlanRegimeTest extends TestCase
      */
     public function test_it_casts_periodicity_unit(PeriodicityUnit $unit): void
     {
-        $plan = Plan::factory()->create();
-
-        $planRegime = PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => $unit->value,
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        $planRegime = PlanRegime::factory()
+            ->create(['periodicity_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->periodicity_unit);
         $this->assertEquals($unit->value, $planRegime->periodicity_unit->value);
@@ -123,19 +89,7 @@ class PlanRegimeTest extends TestCase
         $this->expectException(\ValueError::class);
         $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
-        $plan = Plan::factory()->create();
-
-        PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'invalid',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        PlanRegime::factory()->create(['periodicity_unit' => 'invalid']);
     }
 
     /**
@@ -143,19 +97,8 @@ class PlanRegimeTest extends TestCase
      */
     public function test_it_casts_grace_unit(PeriodicityUnit $unit): void
     {
-        $plan = Plan::factory()->create();
-
-        $planRegime = PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => $unit->value,
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        $planRegime = PlanRegime::factory()
+            ->create(['grace_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->grace_unit);
         $this->assertEquals($unit->value, $planRegime->grace_unit->value);
@@ -166,19 +109,7 @@ class PlanRegimeTest extends TestCase
         $this->expectException(\ValueError::class);
         $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
-        $plan = Plan::factory()->create();
-
-        PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'invalid',
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        PlanRegime::factory()->create(['grace_unit' => 'invalid']);
     }
 
     /**
@@ -186,19 +117,8 @@ class PlanRegimeTest extends TestCase
      */
     public function test_it_casts_trial_unit(PeriodicityUnit $unit): void
     {
-        $plan = Plan::factory()->create();
-
-        $planRegime = PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => $unit->value,
-        ]);
+        $planRegime = PlanRegime::factory()
+            ->create(['trial_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->trial_unit);
         $this->assertEquals($unit->value, $planRegime->trial_unit->value);
@@ -209,19 +129,7 @@ class PlanRegimeTest extends TestCase
         $this->expectException(\ValueError::class);
         $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
-        $plan = Plan::factory()->create();
-
-        PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'invalid',
-        ]);
+        PlanRegime::factory()->create(['trial_unit' => 'invalid']);
     }
 
     public static function periodicityUnitProvider(): array

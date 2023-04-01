@@ -25,23 +25,16 @@ class PlanTest extends TestCase
 
     public function test_it_soft_deletes(): void
     {
-        $plan = Plan::create([
-            'name' => 'Test Plan',
-        ]);
+        $plan = Plan::factory()->create();
 
         $plan->delete();
 
-        $this->assertSoftDeleted('plans', [
-            'id' => $plan->id,
-            'name' => $plan->name,
-        ]);
+        $this->assertSoftDeleted($plan);
     }
 
     public function test_it_has_regimes(): void
     {
-        $plan = Plan::create([
-            'name' => 'Test Plan',
-        ]);
+        $plan = Plan::factory()->create();
 
         $planRegime = PlanRegime::factory()
             ->for($plan)
