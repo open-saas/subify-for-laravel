@@ -17,7 +17,7 @@ class BenefitUsageFactory extends Factory
             'amount' => $this->faker->randomFloat(2, 0, 100),
             'subscriber_id' => $this->faker->randomNumber(),
             'subscriber_type' => $this->faker->word(),
-            'expired_at' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'expired_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),
         ];
     }
 }
