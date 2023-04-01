@@ -3,6 +3,11 @@
 return [
     'persistence' => [
         'eloquent' => [
+            'benefit' => [
+                'model' => \OpenSaaS\Subify\Persistence\Models\Benefit::class,
+                'table' => 'benefits',
+            ],
+
             'plan' => [
                 'model' => \OpenSaaS\Subify\Persistence\Models\Plan::class,
                 'table' => 'plans',
