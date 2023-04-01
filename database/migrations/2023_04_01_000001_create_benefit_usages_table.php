@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('subscriber_id');
             $table->string('subscriber_type');
             $table->timestamp('expired_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index(['subscriber_id', 'subscriber_type']);
