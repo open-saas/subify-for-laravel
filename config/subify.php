@@ -8,6 +8,11 @@ return [
                 'table' => 'benefits',
             ],
 
+            'benefit_usage' => [
+                'model' => \OpenSaaS\Subify\Persistence\Models\BenefitUsage::class,
+                'table' => 'benefit_usages',
+            ],
+
             'plan' => [
                 'model' => \OpenSaaS\Subify\Persistence\Models\Plan::class,
                 'table' => 'plans',
