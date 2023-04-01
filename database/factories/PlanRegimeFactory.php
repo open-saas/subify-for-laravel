@@ -3,6 +3,7 @@
 namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Persistence\Models\PlanRegime;
 
 class PlanRegimeFactory extends Factory
@@ -15,11 +16,11 @@ class PlanRegimeFactory extends Factory
             'name' => $this->faker->words(asText: true),
             'price' => $this->faker->randomFloat(2, 0, 100),
             'periodicity' => $this->faker->numberBetween(1, 12),
-            'periodicity_unit' => $this->faker->randomElement(['day', 'week', 'month', 'year']),
+            'periodicity_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
             'grace' => $this->faker->numberBetween(1, 12),
-            'grace_unit' => $this->faker->randomElement(['day', 'week', 'month', 'year']),
+            'grace_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
             'trial' => $this->faker->numberBetween(1, 12),
-            'trial_unit' => $this->faker->randomElement(['day', 'week', 'month', 'year']),
+            'trial_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
         ];
     }
 }

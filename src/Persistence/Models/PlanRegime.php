@@ -7,11 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanRegimeFactory;
+use OpenSaaS\Subify\Enums\PeriodicityUnit;
 
 class PlanRegime extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    protected $casts = [
+        'periodicity_unit' => PeriodicityUnit::class,
+        'grace_unit' => PeriodicityUnit::class,
+        'trial_unit' => PeriodicityUnit::class,
+    ];
 
     protected $fillable = [
         'plan_id',
