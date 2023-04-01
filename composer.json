@@ -36,7 +36,8 @@
     },
     "autoload": {
         "psr-4": {
-            "OpenSaaS\\Subify\\": "src"
+            "OpenSaaS\\Subify\\": "src",
+            "OpenSaaS\\Subify\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
