@@ -2,11 +2,12 @@
 
 namespace OpenSaaS\Subify\Persistence\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OpenSaaS\Subify\Database\Factories\BenefitFactory;
+use OpenSaaS\Subify\Database\Factories\BenefitUsageFactory;
 
 class BenefitUsage extends Model
 {
@@ -21,13 +22,33 @@ class BenefitUsage extends Model
         'expired_at',
     ];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('expirable', function (Builder $builder) {
+            $builder->where(fn (Builder $query) =>
+                $query->whereNull('expired_at')->orWhere('expired_at', '>', now())
+            );
+        });
+    }
+
+    public function scopeOnlyExpired(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope('expirable')
+            ->where('expired_at', '<=', now());
+    }
+
+    public function scopeWithExpired(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope('expirable');
+    }
+
     public function benefit(): BelongsTo
     {
         return $this->belongsTo(Benefit::class);
     }
 
-    protected static function newFactory(): BenefitFactory
+    protected static function newFactory(): BenefitUsageFactory
     {
-        return BenefitFactory::new();
+        return BenefitUsageFactory::new();
     }
 }
