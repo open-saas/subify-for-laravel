@@ -13,9 +13,7 @@ class PlanRegimeTest extends TestCase
 
     public function test_it_can_be_created(): void
     {
-        $plan = Plan::create([
-            'name' => 'Test Plan',
-        ]);
+        $plan = Plan::factory()->create();
 
         $planRegime = PlanRegime::create([
             'plan_id' => $plan->id,
@@ -45,9 +43,7 @@ class PlanRegimeTest extends TestCase
 
     public function test_it_soft_deletes(): void
     {
-        $plan = Plan::create([
-            'name' => 'Test Plan',
-        ]);
+        $plan = Plan::factory()->create();
 
         $planRegime = PlanRegime::create([
             'plan_id' => $plan->id,
@@ -79,9 +75,7 @@ class PlanRegimeTest extends TestCase
 
     public function test_it_belongs_to_a_plan(): void
     {
-        $plan = Plan::create([
-            'name' => 'Test Plan',
-        ]);
+        $plan = Plan::factory()->create();
 
         $planRegime = PlanRegime::create([
             'plan_id' => $plan->id,
