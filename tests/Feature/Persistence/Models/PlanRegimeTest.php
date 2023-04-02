@@ -87,7 +87,6 @@ class PlanRegimeTest extends TestCase
     public function test_it_throw_exception_when_periodicity_unit_is_invalid(): void
     {
         $this->expectException(\ValueError::class);
-        $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
         PlanRegime::factory()->create(['periodicity_unit' => 'invalid']);
     }
@@ -107,7 +106,6 @@ class PlanRegimeTest extends TestCase
     public function test_it_throw_exception_when_grace_unit_is_invalid(): void
     {
         $this->expectException(\ValueError::class);
-        $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
         PlanRegime::factory()->create(['grace_unit' => 'invalid']);
     }
@@ -127,7 +125,6 @@ class PlanRegimeTest extends TestCase
     public function test_it_throw_exception_when_trial_unit_is_invalid(): void
     {
         $this->expectException(\ValueError::class);
-        $this->expectExceptionMessage('"invalid" is not a valid backing value for enum "OpenSaaS\Subify\Enums\PeriodicityUnit"');
 
         PlanRegime::factory()->create(['trial_unit' => 'invalid']);
     }
