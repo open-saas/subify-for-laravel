@@ -3,6 +3,7 @@
 namespace Tests\Feature\Persistence\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Persistence\Models\Benefit;
 use Tests\Feature\TestCase;
 
@@ -37,5 +38,34 @@ class BenefitTest extends TestCase
         $benefit->delete();
 
         $this->assertSoftDeleted($benefit);
+    }
+
+    /**
+     * @dataProvider periodicityUnitProvider
+     */
+    public function test_it_casts_periodicity_unit(PeriodicityUnit $unit): void
+    {
+        $benefit = Benefit::factory()
+            ->create(['periodicity_unit' => $unit]);
+
+        $this->assertInstanceOf(PeriodicityUnit::class, $benefit->periodicity_unit);
+        $this->assertEquals($unit->value, $benefit->periodicity_unit->value);
+    }
+
+    public function test_it_throw_exception_when_periodicity_unit_is_invalid(): void
+    {
+        $this->expectException(\ValueError::class);
+
+        Benefit::factory()->create(['periodicity_unit' => 'invalid']);
+    }
+
+    public static function periodicityUnitProvider(): array
+    {
+        return [
+            'day' => [PeriodicityUnit::Day],
+            'week' => [PeriodicityUnit::Week],
+            'month' => [PeriodicityUnit::Month],
+            'year' => [PeriodicityUnit::Year],
+        ];
     }
 }
