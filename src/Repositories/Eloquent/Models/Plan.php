@@ -22,6 +22,11 @@ class Plan extends Model
         return $this->hasMany(PlanRegime::class);
     }
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.plan.table');
+    }
+
     protected static function newFactory(): PlanFactory
     {
         return PlanFactory::new();

@@ -37,6 +37,11 @@ class PlanRegime extends Model
         return $this->belongsTo(Plan::class);
     }
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.plan_regime.table');
+    }
+
     protected static function newFactory(): PlanRegimeFactory
     {
         return PlanRegimeFactory::new();

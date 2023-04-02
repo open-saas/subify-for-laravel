@@ -31,6 +31,11 @@ class BenefitPlan extends Pivot
         return $this->belongsTo(Plan::class);
     }
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.benefit_plan.table');
+    }
+
     protected static function newFactory(): BenefitPlanFactory
     {
         return BenefitPlanFactory::new();

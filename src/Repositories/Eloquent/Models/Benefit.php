@@ -25,6 +25,11 @@ class Benefit extends Model
         'periodicity_unit',
     ];
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.benefit.table');
+    }
+
     protected static function newFactory(): BenefitFactory
     {
         return BenefitFactory::new();

@@ -72,6 +72,11 @@ class Subscription extends Model
         return $this->belongsTo(PlanRegime::class);
     }
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.subscription.table');
+    }
+
     protected static function newFactory(): SubscriptionFactory
     {
         return SubscriptionFactory::new();

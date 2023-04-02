@@ -47,6 +47,11 @@ class BenefitUsage extends Model
         return $this->belongsTo(Benefit::class);
     }
 
+    public function getTable(): string
+    {
+        return config('subify.persistence.eloquent.benefit_usage.table');
+    }
+
     protected static function newFactory(): BenefitUsageFactory
     {
         return BenefitUsageFactory::new();
