@@ -3,8 +3,8 @@
 namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use OpenSaaS\Subify\Persistence\Models\Benefit;
-use OpenSaaS\Subify\Persistence\Models\BenefitUsage;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\BenefitUsage;
 
 class BenefitUsageFactory extends Factory
 {

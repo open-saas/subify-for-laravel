@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSaaS\Subify\Persistence\Models;
+namespace OpenSaaS\Subify\Repositories\Eloquent\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

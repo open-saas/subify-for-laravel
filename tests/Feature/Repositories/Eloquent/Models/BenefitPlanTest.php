@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Persistence\Models;
+namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use OpenSaaS\Subify\Persistence\Models\Benefit;
-use OpenSaaS\Subify\Persistence\Models\BenefitPlan;
-use OpenSaaS\Subify\Persistence\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\BenefitPlan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
 use Tests\Feature\TestCase;
 
 class BenefitPlanTest extends TestCase

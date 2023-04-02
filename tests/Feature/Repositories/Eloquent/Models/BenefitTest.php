@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Persistence\Models;
+namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
-use OpenSaaS\Subify\Persistence\Models\Benefit;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use Tests\Feature\TestCase;
 
 class BenefitTest extends TestCase

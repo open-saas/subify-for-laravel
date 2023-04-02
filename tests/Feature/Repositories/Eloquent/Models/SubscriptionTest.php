@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Persistence\Models;
+namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use OpenSaaS\Subify\Persistence\Models\Plan;
-use OpenSaaS\Subify\Persistence\Models\PlanRegime;
-use OpenSaaS\Subify\Persistence\Models\Subscription;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 use Tests\Feature\TestCase;
 
 class SubscriptionTest extends TestCase

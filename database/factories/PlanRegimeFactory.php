@@ -4,8 +4,8 @@ namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
-use OpenSaaS\Subify\Persistence\Models\Plan;
-use OpenSaaS\Subify\Persistence\Models\PlanRegime;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
 
 class PlanRegimeFactory extends Factory
 {

@@ -3,7 +3,7 @@
 namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use OpenSaaS\Subify\Persistence\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
 
 class PlanFactory extends Factory
 {

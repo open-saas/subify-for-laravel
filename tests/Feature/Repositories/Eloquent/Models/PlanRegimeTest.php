@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Persistence\Models;
+namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
-use OpenSaaS\Subify\Persistence\Models\Plan;
-use OpenSaaS\Subify\Persistence\Models\PlanRegime;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
 use Tests\Feature\TestCase;
 
 class PlanRegimeTest extends TestCase

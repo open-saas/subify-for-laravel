@@ -3,9 +3,9 @@
 namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use OpenSaaS\Subify\Persistence\Models\Plan;
-use OpenSaaS\Subify\Persistence\Models\PlanRegime;
-use OpenSaaS\Subify\Persistence\Models\Subscription;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 
 class SubscriptionFactory extends Factory
 {
