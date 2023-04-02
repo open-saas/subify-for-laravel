@@ -27,6 +27,11 @@ return [
                 'model' => \OpenSaaS\Subify\Persistence\Models\BenefitPlan::class,
                 'table' => 'benefit_plan',
             ],
+
+            'subscription' => [
+                'model' => \OpenSaaS\Subify\Persistence\Models\Subscription::class,
+                'table' => 'subscriptions',
+            ],
         ],
     ],
 ];
