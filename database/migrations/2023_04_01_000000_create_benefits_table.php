@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create(config('subify.persistence.eloquent.benefit.table'), function (Blueprint $table) {
+        Schema::create(config('subify.repositories.eloquent.benefit.table'), function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->boolean('is_consumable')->default(false);
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists(config('subify.persistence.eloquent.benefit.table'));
+        Schema::dropIfExists(config('subify.repositories.eloquent.benefit.table'));
     }
 };

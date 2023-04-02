@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create(config('subify.persistence.eloquent.benefit_plan.table'), function (Blueprint $table) {
+        Schema::create(config('subify.repositories.eloquent.benefit_plan.table'), function (Blueprint $table) {
             $table->id();
-            $table->foreignId('benefit_id')->constrained(config('subify.persistence.eloquent.benefit.table'));
-            $table->foreignId('plan_id')->constrained(config('subify.persistence.eloquent.plan.table'));
+            $table->foreignId('benefit_id')->constrained(config('subify.repositories.eloquent.benefit.table'));
+            $table->foreignId('plan_id')->constrained(config('subify.repositories.eloquent.plan.table'));
             $table->decimal('charges', 8, 2);
             $table->boolean('is_unlimited')->default(false);
             $table->timestamps();
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists(config('subify.persistence.eloquent.benefit_plan.table'));
+        Schema::dropIfExists(config('subify.repositories.eloquent.benefit_plan.table'));
     }
 };

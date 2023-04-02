@@ -27,7 +27,7 @@ class Benefit extends Model
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.benefit.table');
+        return config('subify.repositories.eloquent.benefit.table');
     }
 
     protected static function newFactory(): BenefitFactory

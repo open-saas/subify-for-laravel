@@ -49,7 +49,7 @@ class BenefitUsage extends Model
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.benefit_usage.table');
+        return config('subify.repositories.eloquent.benefit_usage.table');
     }
 
     protected static function newFactory(): BenefitUsageFactory

@@ -24,7 +24,7 @@ class Plan extends Model
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.plan.table');
+        return config('subify.repositories.eloquent.plan.table');
     }
 
     protected static function newFactory(): PlanFactory

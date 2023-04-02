@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'persistence' => [
+    'repositories' => [
         'eloquent' => [
             'benefit' => [
                 'model' => \OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit::class,

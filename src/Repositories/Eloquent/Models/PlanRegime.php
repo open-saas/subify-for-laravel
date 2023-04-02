@@ -39,7 +39,7 @@ class PlanRegime extends Model
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.plan_regime.table');
+        return config('subify.repositories.eloquent.plan_regime.table');
     }
 
     protected static function newFactory(): PlanRegimeFactory

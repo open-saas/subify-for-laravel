@@ -74,7 +74,7 @@ class Subscription extends Model
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.subscription.table');
+        return config('subify.repositories.eloquent.subscription.table');
     }
 
     protected static function newFactory(): SubscriptionFactory

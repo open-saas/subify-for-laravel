@@ -33,7 +33,7 @@ class BenefitPlan extends Pivot
 
     public function getTable(): string
     {
-        return config('subify.persistence.eloquent.benefit_plan.table');
+        return config('subify.repositories.eloquent.benefit_plan.table');
     }
 
     protected static function newFactory(): BenefitPlanFactory
