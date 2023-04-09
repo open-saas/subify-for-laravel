@@ -8,11 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\SubscriptionFactory;
+use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
+use OpenSaaS\Subify\Repositories\Eloquent\Concerns\HasSubscriberIdentifier;
 
 class Subscription extends Model
 {
     use HasFactory;
+    use HasSubscriberIdentifier;
     use SoftDeletes;
+
+    protected $casts = [
+        'grace_ended_at' => 'datetime',
+        'trial_ended_at' => 'datetime',
+        'renewed_at' => 'datetime',
+        'expired_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'plan_id',
@@ -75,6 +85,22 @@ class Subscription extends Model
     public function getTable(): string
     {
         return config('subify.repositories.eloquent.subscription.table');
+    }
+
+    public function toEntity(): SubscriptionEntity
+    {
+        return new SubscriptionEntity(
+            $this->id,
+            $this->toSubscriberIdentifier($this->subscriber_type, $this->subscriber_id),
+            $this->plan_id,
+            $this->plan_regime_id,
+            $this->grace_ended_at,
+            $this->trial_ended_at,
+            $this->renewed_at,
+            $this->expired_at,
+            $this->created_at,
+            $this->updated_at,
+        );
     }
 
     protected static function newFactory(): SubscriptionFactory

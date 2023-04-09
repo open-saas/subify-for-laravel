@@ -3,6 +3,7 @@
 namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
@@ -330,5 +331,25 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscriptionWithPastGrace->id));
         $this->assertNotEmpty(Subscription::inTrial()->find($expiredSubscriptionWithTrial->id));
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscriptionWithPastTrial->id));
+    }
+
+    public function test_it_has_a_method_to_convert_to_entity(): void
+    {
+        $subscription = Subscription::factory()->create();
+        $subscriptionEntity = $subscription->toEntity();
+
+        $expectedSubscriberIdentifier = $subscription->subscriber_id . ':' . $subscription->subscriber_type;
+
+        $this->assertInstanceOf(SubscriptionEntity::class, $subscriptionEntity);
+        $this->assertEquals($subscription->id, $subscriptionEntity->getId());
+        $this->assertEquals($expectedSubscriberIdentifier, $subscriptionEntity->getSubscriberIdentifier());
+        $this->assertEquals($subscription->plan_id, $subscriptionEntity->getPlanId());
+        $this->assertEquals($subscription->plan_regime_id, $subscriptionEntity->getPlanRegimeId());
+        $this->assertEquals($subscription->grace_ended_at, $subscriptionEntity->getGraceEndedAt());
+        $this->assertEquals($subscription->trial_ended_at, $subscriptionEntity->getTrialEndedAt());
+        $this->assertEquals($subscription->renewed_at, $subscriptionEntity->getRenewedAt());
+        $this->assertEquals($subscription->expired_at, $subscriptionEntity->getExpiredAt());
+        $this->assertEquals($subscription->created_at, $subscriptionEntity->getCreatedAt());
+        $this->assertEquals($subscription->updated_at, $subscriptionEntity->getUpdatedAt());
     }
 }

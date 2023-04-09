@@ -2,6 +2,13 @@
 
 return [
     'repositories' => [
+        'cache' => [
+            'enabled' => false,
+            'prefix' => '__subify:',
+            'store' => null, // set it to `null` to use the default cache store
+            'ttl' => DateInterval::createFromDateString('1 day'),
+        ],
+
         'eloquent' => [
             'benefit' => [
                 'model' => \OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit::class,
