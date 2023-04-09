@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanFactory;
+use OpenSaaS\Subify\Entities\Plan as PlanEntity;
 
 class Plan extends Model
 {
@@ -30,5 +31,20 @@ class Plan extends Model
     protected static function newFactory(): PlanFactory
     {
         return PlanFactory::new();
+    }
+
+    public function toEntity(array $regimes = []): PlanEntity
+    {
+        $regimes = $this->relationLoaded('regimes')
+            ? $this->regimes->map->toEntity()->toArray()
+            : $regimes;
+
+        return new PlanEntity(
+            $this->id,
+            $this->name,
+            $regimes,
+            $this->created_at,
+            $this->updated_at,
+        );
     }
 }
