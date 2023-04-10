@@ -3,7 +3,8 @@
 namespace OpenSaaS\Subify\Entities;
 
 use DateInterval;
-use DateTime as DateTime;
+use DateTime;
+use DateTimeInterface;
 
 final class PlanRegime
 {
@@ -63,5 +64,32 @@ final class PlanRegime
     public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function calculateNextExpiration(string|DateTimeInterface $from = 'now'): ?DateTimeInterface
+    {
+        if (empty($this->periodicity)) {
+            return null;
+        }
+
+        return (new DateTime($from))->add($this->periodicity);
+    }
+
+    public function calculateNextGraceEnd(string|DateTimeInterface $from = 'now'): ?DateTimeInterface
+    {
+        if (empty($this->grace)) {
+            return null;
+        }
+
+        return (new DateTime($from))->add($this->grace);
+    }
+
+    public function calculateNextTrialEnd(string|DateTimeInterface $from = 'now'): ?DateTimeInterface
+    {
+        if (empty($this->trial)) {
+            return null;
+        }
+
+        return (new DateTime($from))->add($this->trial);
     }
 }
