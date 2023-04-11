@@ -64,8 +64,7 @@ class SubscriptionTest extends TestCase
 
         $subscription = Subscription::factory()
             ->for($plan)
-            ->create()
-        ;
+            ->create();
 
         $this->assertEquals($plan->id, $subscription->plan->id);
     }
@@ -76,8 +75,7 @@ class SubscriptionTest extends TestCase
 
         $subscription = Subscription::factory()
             ->for($planRegime)
-            ->create()
-        ;
+            ->create();
 
         $this->assertEquals($planRegime->id, $subscription->planRegime->id);
     }
@@ -89,48 +87,42 @@ class SubscriptionTest extends TestCase
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertEmpty(Subscription::find($expiredSubscription->id));
         $this->assertNotEmpty(Subscription::find($unexpiredSubscription->id));
@@ -147,48 +139,42 @@ class SubscriptionTest extends TestCase
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertNotEmpty(Subscription::onlyExpired()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::onlyExpired()->find($unexpiredSubscription->id));
@@ -205,48 +191,42 @@ class SubscriptionTest extends TestCase
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertNotEmpty(Subscription::withExpired()->find($expiredSubscription->id));
         $this->assertNotEmpty(Subscription::withExpired()->find($unexpiredSubscription->id));
@@ -263,48 +243,42 @@ class SubscriptionTest extends TestCase
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertEmpty(Subscription::inGrace()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::inGrace()->find($unexpiredSubscription->id));
@@ -321,48 +295,42 @@ class SubscriptionTest extends TestCase
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::inTrial()->find($unexpiredSubscription->id));
@@ -380,8 +348,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscription = Subscription::factory()
             ->create([
@@ -389,8 +356,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscriptionWithGrace = Subscription::factory()
             ->create([
@@ -398,8 +364,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscriptionWithTrial = Subscription::factory()
             ->create([
@@ -407,8 +372,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertNotEmpty(Subscription::find($startedSubscription->id));
         $this->assertEmpty(Subscription::find($unstartedSubscription->id));
@@ -424,8 +388,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscription = Subscription::factory()
             ->create([
@@ -433,8 +396,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscriptionWithGrace = Subscription::factory()
             ->create([
@@ -442,8 +404,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ])
-        ;
+            ]);
 
         $unstartedSubscriptionWithTrial = Subscription::factory()
             ->create([
@@ -451,8 +412,7 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $this->assertEmpty(Subscription::unstarted()->find($startedSubscription->id));
         $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscription->id));

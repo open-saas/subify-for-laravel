@@ -29,7 +29,6 @@ class SubscriptionRepository implements DatabaseSubscriptionRepository
             ->newQuery()
             ->where($this->subscriberIs($subscriberIdentifier))
             ->first()
-            ?->toEntity()
-        ;
+            ?->toEntity();
     }
 }

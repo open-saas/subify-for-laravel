@@ -36,8 +36,7 @@ class BenefitUsage extends Model
     public function scopeOnlyExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirable')
-            ->where('expired_at', '<=', now())
-        ;
+            ->where('expired_at', '<=', now());
     }
 
     public function scopeWithExpired(Builder $query): Builder

@@ -51,8 +51,7 @@ class BenefitTest extends TestCase
     public function testItCastsPeriodicityUnit(PeriodicityUnit $unit): void
     {
         $benefit = Benefit::factory()
-            ->create(['periodicity_unit' => $unit])
-        ;
+            ->create(['periodicity_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $benefit->periodicity_unit);
         $this->assertEquals($unit->value, $benefit->periodicity_unit->value);

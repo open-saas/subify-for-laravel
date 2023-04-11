@@ -55,8 +55,7 @@ class Subscription extends Model
     public function scopeOnlyExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
-            ->where('expired_at', '<=', now())
-        ;
+            ->where('expired_at', '<=', now());
     }
 
     public function scopeWithExpired(Builder $query): Builder
@@ -68,23 +67,20 @@ class Subscription extends Model
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
             ->where('expired_at', '<=', now())
-            ->where('grace_ended_at', '>', now())
-        ;
+            ->where('grace_ended_at', '>', now());
     }
 
     public function scopeInTrial(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
             ->where('expired_at', '<=', now())
-            ->where('trial_ended_at', '>', now())
-        ;
+            ->where('trial_ended_at', '>', now());
     }
 
     public function scopeUnstarted(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
-            ->where('started_at', '>', now())
-        ;
+            ->where('started_at', '>', now());
     }
 
     public function plan(): BelongsTo
@@ -127,8 +123,7 @@ class Subscription extends Model
                         ->orWhere('expired_at', '>', now())
                         ->orWhere('grace_ended_at', '>', now())
                         ->orWhere('trial_ended_at', '>', now())
-                )
-            ;
+                );
         });
     }
 

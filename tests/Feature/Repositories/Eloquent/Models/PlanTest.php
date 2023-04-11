@@ -43,8 +43,7 @@ class PlanTest extends TestCase
 
         $planRegime = PlanRegime::factory()
             ->for($plan)
-            ->create()
-        ;
+            ->create();
 
         $this->assertDatabaseHas('plan_regimes', [
             'id' => $planRegime->id,
@@ -75,8 +74,7 @@ class PlanTest extends TestCase
         $regimes = PlanRegime::factory()
             ->for($plan)
             ->count(3)
-            ->create()
-        ;
+            ->create();
 
         $expectedRegimes = $regimes->map->toEntity()->toArray();
 
@@ -94,8 +92,7 @@ class PlanTest extends TestCase
         $regimes = PlanRegime::factory()
             ->for($plan)
             ->count(3)
-            ->create()
-        ;
+            ->create();
 
         $expectedRegimes = $regimes->map->toEntity()->toArray();
 

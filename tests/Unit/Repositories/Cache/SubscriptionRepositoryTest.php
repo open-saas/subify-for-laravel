@@ -34,14 +34,12 @@ class SubscriptionRepositoryTest extends TestCase
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.store')
-            ->andReturn('cache-store')
-        ;
+            ->andReturn('cache-store');
 
         $cacheFactory
             ->shouldReceive('store')
             ->with('cache-store')
-            ->andReturn($this->cacheRepository)
-        ;
+            ->andReturn($this->cacheRepository);
 
         $this->repository = new SubscriptionRepository(
             $cacheFactory,
@@ -66,15 +64,13 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.store')
-            ->andReturn('cache-store')
-        ;
+            ->andReturn('cache-store');
 
         $cacheFactory
             ->shouldReceive('store')
             ->once()
             ->with('cache-store')
-            ->andReturn($cacheRepository)
-        ;
+            ->andReturn($cacheRepository);
 
         new SubscriptionRepository($cacheFactory, $configRepository);
 
@@ -89,8 +85,7 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:')
-        ;
+            ->andReturn('prefix:');
 
         $this->cacheRepository
             ->shouldReceive('get')
@@ -107,8 +102,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'e' => $expectedSubscription->getExpiredAt(),
                 'c' => $expectedSubscription->getCreatedAt(),
                 'u' => $expectedSubscription->getUpdatedAt(),
-            ])
-        ;
+            ]);
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
 
@@ -121,15 +115,13 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:')
-        ;
+            ->andReturn('prefix:');
 
         $this->cacheRepository
             ->shouldReceive('get')
             ->once()
             ->with('prefix:subscriber-identifier')
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
 
@@ -145,15 +137,13 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:')
-        ;
+            ->andReturn('prefix:');
 
         $this->configRepository
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.ttl')
-            ->andReturn(60)
-        ;
+            ->andReturn(60);
 
         $this->cacheRepository
             ->shouldReceive('put')
@@ -169,8 +159,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'e' => $subscription->getExpiredAt(),
                 'c' => $subscription->getCreatedAt(),
                 'u' => $subscription->getUpdatedAt(),
-            ], 60)
-        ;
+            ], 60);
 
         $this->repository->save($subscription);
 
@@ -186,14 +175,12 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:')
-        ;
+            ->andReturn('prefix:');
 
         $this->cacheRepository
             ->shouldReceive('delete')
             ->once()
-            ->with($expectedSubscriberIdentifier)
-        ;
+            ->with($expectedSubscriberIdentifier);
 
         $this->repository->delete($subscription->getSubscriberIdentifier());
 

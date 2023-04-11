@@ -70,22 +70,19 @@ class BenefitUsageTest extends TestCase
             ->for($benefit)
             ->create([
                 'expired_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $notExpiredBenefitUsage = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => null,
-            ])
-        ;
+            ]);
 
         $this->assertEmpty(BenefitUsage::find($expiredBenefitUsage->id));
         $this->assertNotEmpty(BenefitUsage::find($notExpiredBenefitUsage->id));
@@ -100,22 +97,19 @@ class BenefitUsageTest extends TestCase
             ->for($benefit)
             ->create([
                 'expired_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $notExpiredBenefitUsage = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => null,
-            ])
-        ;
+            ]);
 
         $this->assertNotEmpty(BenefitUsage::onlyExpired()->find($expiredBenefitUsage->id));
         $this->assertEmpty(BenefitUsage::onlyExpired()->find($notExpiredBenefitUsage->id));
@@ -130,22 +124,19 @@ class BenefitUsageTest extends TestCase
             ->for($benefit)
             ->create([
                 'expired_at' => now()->subDays(30),
-            ])
-        ;
+            ]);
 
         $notExpiredBenefitUsage = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => now()->addDays(30),
-            ])
-        ;
+            ]);
 
         $benefitUsageWithoutExpiredAt = BenefitUsage::factory()
             ->for($benefit)
             ->create([
                 'expired_at' => null,
-            ])
-        ;
+            ]);
 
         $this->assertNotEmpty(BenefitUsage::withExpired()->find($expiredBenefitUsage->id));
         $this->assertNotEmpty(BenefitUsage::withExpired()->find($notExpiredBenefitUsage->id));

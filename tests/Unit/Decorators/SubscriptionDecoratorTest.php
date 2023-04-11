@@ -60,16 +60,13 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturn($subscription)
-        ;
+            ->andReturn($subscription);
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('find')
-        ;
+            ->shouldNotReceive('find');
 
         $this->databaseSubscriptionRepository
-            ->shouldNotReceive('findActive')
-        ;
+            ->shouldNotReceive('findActive');
 
         $this->assertEquals(
             $subscription,
@@ -85,32 +82,27 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->cacheSubscriptionRepository
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturn($subscription)
-        ;
+            ->andReturn($subscription);
 
         $this->arraySubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
-            ->once()
-        ;
+            ->once();
 
         $this->databaseSubscriptionRepository
-            ->shouldNotReceive('findActive')
-        ;
+            ->shouldNotReceive('findActive');
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.subscription.enabled')
             ->once()
-            ->andReturnTrue()
-        ;
+            ->andReturnTrue();
 
         $this->assertEquals(
             $subscription,
@@ -126,36 +118,30 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('find')
-        ;
+            ->shouldNotReceive('find');
 
         $this->databaseSubscriptionRepository
             ->shouldReceive('findActive')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturn($subscription)
-        ;
+            ->andReturn($subscription);
 
         $this->arraySubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
-            ->once()
-        ;
+            ->once();
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save')
-        ;
+            ->shouldNotReceive('save');
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.subscription.enabled')
             ->once()
-            ->andReturnFalse()
-        ;
+            ->andReturnFalse();
 
         $this->assertEquals(
             $subscription,
@@ -171,41 +157,35 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->cacheSubscriptionRepository
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->databaseSubscriptionRepository
             ->shouldReceive('findActive')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturn($subscription)
-        ;
+            ->andReturn($subscription);
 
         $this->arraySubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
-            ->once()
-        ;
+            ->once();
 
         $this->cacheSubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
-            ->once()
-        ;
+            ->once();
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.subscription.enabled')
             ->once()
-            ->andReturnTrue()
-        ;
+            ->andReturnTrue();
 
         $this->assertEquals(
             $subscription,
@@ -221,37 +201,31 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->cacheSubscriptionRepository
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->databaseSubscriptionRepository
             ->shouldReceive('findActive')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->arraySubscriptionRepository
-            ->shouldNotReceive('save')
-        ;
+            ->shouldNotReceive('save');
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save')
-        ;
+            ->shouldNotReceive('save');
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.subscription.enabled')
             ->once()
-            ->andReturnTrue()
-        ;
+            ->andReturnTrue();
 
         $this->assertNull(
             $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
@@ -266,34 +240,28 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('find')
-        ;
+            ->shouldNotReceive('find');
 
         $this->databaseSubscriptionRepository
             ->shouldReceive('findActive')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull()
-        ;
+            ->andReturnNull();
 
         $this->arraySubscriptionRepository
-            ->shouldNotReceive('save')
-        ;
+            ->shouldNotReceive('save');
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save')
-        ;
+            ->shouldNotReceive('save');
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.subscription.enabled')
             ->once()
-            ->andReturnFalse()
-        ;
+            ->andReturnFalse();
 
         $this->assertNull(
             $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())

@@ -29,8 +29,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->addDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->subDay(),
-            ])
-        ;
+            ]);
 
         $activeSubscriptionIdentifier = $activeSubscription->subscriber_type
             .':'
@@ -49,8 +48,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->subDay(),
-            ])
-        ;
+            ]);
 
         $expiredSubscriptionIdentifier = $expiredSubscription->subscriber_type
             .':'
@@ -75,8 +73,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->addDay(),
                 'trial_ended_at' => now()->subDay(),
-            ])
-        ;
+            ]);
 
         $subscriptionIdentifier = $subscription->subscriber_type
             .':'
@@ -95,8 +92,7 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->addDay(),
-            ])
-        ;
+            ]);
 
         $subscriptionIdentifier = $subscription->subscriber_type
             .':'
@@ -114,8 +110,7 @@ class SubscriptionRepositoryTest extends TestCase
             ->create([
                 'expired_at' => now()->addDay(),
                 'started_at' => now()->subDay(),
-            ])
-        ;
+            ]);
 
         $subscriptionIdentifier = $subscription->subscriber_type
             .':'
@@ -133,8 +128,7 @@ class SubscriptionRepositoryTest extends TestCase
             ->create([
                 'expired_at' => now()->addDay(),
                 'started_at' => now()->addDay(),
-            ])
-        ;
+            ]);
 
         $subscriptionIdentifier = $subscription->subscriber_type
             .':'

@@ -83,8 +83,7 @@ class PlanRegimeTest extends TestCase
     public function testItCastsPeriodicityUnit(PeriodicityUnit $unit): void
     {
         $planRegime = PlanRegime::factory()
-            ->create(['periodicity_unit' => $unit])
-        ;
+            ->create(['periodicity_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->periodicity_unit);
         $this->assertEquals($unit->value, $planRegime->periodicity_unit->value);
@@ -103,8 +102,7 @@ class PlanRegimeTest extends TestCase
     public function testItCastsGraceUnit(PeriodicityUnit $unit): void
     {
         $planRegime = PlanRegime::factory()
-            ->create(['grace_unit' => $unit])
-        ;
+            ->create(['grace_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->grace_unit);
         $this->assertEquals($unit->value, $planRegime->grace_unit->value);
@@ -123,8 +121,7 @@ class PlanRegimeTest extends TestCase
     public function testItCastsTrialUnit(PeriodicityUnit $unit): void
     {
         $planRegime = PlanRegime::factory()
-            ->create(['trial_unit' => $unit])
-        ;
+            ->create(['trial_unit' => $unit]);
 
         $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->trial_unit);
         $this->assertEquals($unit->value, $planRegime->trial_unit->value);
@@ -186,8 +183,7 @@ class PlanRegimeTest extends TestCase
                 'grace_unit' => null,
                 'trial' => null,
                 'trial_unit' => null,
-            ])
-        ;
+            ]);
 
         $entity = $planRegime->toEntity();
 
