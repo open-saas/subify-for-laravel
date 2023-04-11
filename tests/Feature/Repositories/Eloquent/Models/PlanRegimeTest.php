@@ -11,8 +11,6 @@ use Tests\Feature\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class PlanRegimeTest extends TestCase
 {

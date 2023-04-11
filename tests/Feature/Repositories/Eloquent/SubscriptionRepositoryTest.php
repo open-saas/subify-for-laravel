@@ -8,8 +8,6 @@ use Tests\Feature\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class SubscriptionRepositoryTest extends TestCase
 {

@@ -13,8 +13,6 @@ use Tests\Fixtures\SubscriptionFixture;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class SubscriptionDecoratorTest extends TestCase
 {

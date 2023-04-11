@@ -10,8 +10,6 @@ use Tests\Feature\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class BenefitPlanTest extends TestCase
 {

@@ -9,8 +9,6 @@ use Tests\Feature\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class BenefitUsageTest extends TestCase
 {

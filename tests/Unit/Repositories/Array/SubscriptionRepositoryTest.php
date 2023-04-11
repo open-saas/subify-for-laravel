@@ -8,8 +8,6 @@ use Tests\Fixtures\SubscriptionFixture;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class SubscriptionRepositoryTest extends TestCase
 {

@@ -7,8 +7,6 @@ use Tests\Fixtures\PlanRegimeFixture;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class PlanRegimeTest extends TestCase
 {
