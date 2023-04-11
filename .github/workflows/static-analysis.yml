@@ -39,4 +39,4 @@ jobs:
           command: composer update --prefer-stable --prefer-dist --no-interaction --no-progress
 
       - name: Execute type checking
-        run: composer lint
+        run: composer phpstan
