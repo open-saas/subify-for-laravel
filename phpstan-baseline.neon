@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\HigherOrderCollectionProxy\\:\\:toEntity\\(\\)\\.$#"
+			count: 1
+			path: src/Repositories/Eloquent/Models/Plan.php
