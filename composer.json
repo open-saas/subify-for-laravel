@@ -47,7 +47,8 @@
         }
     },
     "scripts": {
-        "lint": "phpstan analyse",
+        "phpstan": "phpstan analyse",
+        "phpcsfixer-analyse": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix . --dry-run -v",
         "test": "phpunit"
     },
     "config": {
