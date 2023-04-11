@@ -8,11 +8,16 @@ use OpenSaaS\Subify\Repositories\Eloquent\Models\BenefitPlan;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
 use Tests\Feature\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class BenefitPlanTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_can_be_created(): void
+    public function testItCanBeCreated(): void
     {
         $benefit = Benefit::factory()->create();
         $plan = Plan::factory()->create();
@@ -33,7 +38,7 @@ class BenefitPlanTest extends TestCase
         ]);
     }
 
-    public function test_it_does_not_soft_deletes(): void
+    public function testItDoesNotSoftDeletes(): void
     {
         $benefitPlan = BenefitPlan::factory()->create();
 
@@ -44,7 +49,7 @@ class BenefitPlanTest extends TestCase
         ]);
     }
 
-    public function test_it_belongs_to_a_benefit(): void
+    public function testItBelongsToABenefit(): void
     {
         $benefit = Benefit::factory()->create();
         $plan = Plan::factory()->create();
@@ -59,7 +64,7 @@ class BenefitPlanTest extends TestCase
         $this->assertEquals($benefit->id, $benefitPlan->benefit->id);
     }
 
-    public function test_it_belongs_to_a_plan(): void
+    public function testItBelongsToAPlan(): void
     {
         $benefit = Benefit::factory()->create();
         $plan = Plan::factory()->create();

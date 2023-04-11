@@ -7,11 +7,16 @@ use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
 use Tests\Feature\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PlanTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_can_be_created(): void
+    public function testItCanBeCreated(): void
     {
         $plan = Plan::create([
             'name' => 'Test Plan',
@@ -23,7 +28,7 @@ class PlanTest extends TestCase
         ]);
     }
 
-    public function test_it_soft_deletes(): void
+    public function testItSoftDeletes(): void
     {
         $plan = Plan::factory()->create();
 
@@ -32,13 +37,14 @@ class PlanTest extends TestCase
         $this->assertSoftDeleted($plan);
     }
 
-    public function test_it_has_regimes(): void
+    public function testItHasRegimes(): void
     {
         $plan = Plan::factory()->create();
 
         $planRegime = PlanRegime::factory()
             ->for($plan)
-            ->create();
+            ->create()
+        ;
 
         $this->assertDatabaseHas('plan_regimes', [
             'id' => $planRegime->id,
@@ -49,7 +55,7 @@ class PlanTest extends TestCase
         $this->assertEquals($plan->regimes->first()->id, $planRegime->id);
     }
 
-    public function test_it_has_a_method_to_convert_to_entity(): void
+    public function testItHasAMethodToConvertToEntity(): void
     {
         $plan = Plan::factory()->create();
 
@@ -62,14 +68,15 @@ class PlanTest extends TestCase
         $this->assertEquals($plan->updated_at, $planEntity->getUpdatedAt());
     }
 
-    public function test_it_adds_regimes_to_entity_if_loaded(): void
+    public function testItAddsRegimesToEntityIfLoaded(): void
     {
         $plan = Plan::factory()->create();
 
         $regimes = PlanRegime::factory()
             ->for($plan)
             ->count(3)
-            ->create();
+            ->create()
+        ;
 
         $expectedRegimes = $regimes->map->toEntity()->toArray();
 
@@ -80,14 +87,15 @@ class PlanTest extends TestCase
         $this->assertEquals($expectedRegimes, $planEntity->getRegimes());
     }
 
-    public function test_it_adds_passed_regimes_to_entity_if_relation_not_loaded(): void
+    public function testItAddsPassedRegimesToEntityIfRelationNotLoaded(): void
     {
         $plan = Plan::factory()->create();
 
         $regimes = PlanRegime::factory()
             ->for($plan)
             ->count(3)
-            ->create();
+            ->create()
+        ;
 
         $expectedRegimes = $regimes->map->toEntity()->toArray();
 

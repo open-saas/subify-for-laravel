@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitUsageFactory;
 
 /**
- * @property int $id
- * @property int $benefit_id
- * @property int $subscriber_id
- * @property string $subscriber_type
- * @property float $amount
+ * @property int                        $id
+ * @property int                        $benefit_id
+ * @property int                        $subscriber_id
+ * @property string                     $subscriber_type
+ * @property float                      $amount
  * @property \Illuminate\Support\Carbon $expired_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
@@ -33,19 +33,11 @@ class BenefitUsage extends Model
         'expired_at',
     ];
 
-    protected static function booted()
-    {
-        static::addGlobalScope('expirable', function (Builder $builder) {
-            $builder->where(fn (Builder $query) =>
-                $query->whereNull('expired_at')->orWhere('expired_at', '>', now())
-            );
-        });
-    }
-
     public function scopeOnlyExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirable')
-            ->where('expired_at', '<=', now());
+            ->where('expired_at', '<=', now())
+        ;
     }
 
     public function scopeWithExpired(Builder $query): Builder
@@ -61,6 +53,15 @@ class BenefitUsage extends Model
     public function getTable(): string
     {
         return config('subify.repositories.eloquent.benefit_usage.table');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('expirable', function (Builder $builder) {
+            $builder->where(
+                fn (Builder $query) => $query->whereNull('expired_at')->orWhere('expired_at', '>', now())
+            );
+        });
     }
 
     protected static function newFactory(): BenefitUsageFactory

@@ -10,11 +10,11 @@ use OpenSaaS\Subify\Database\Factories\PlanFactory;
 use OpenSaaS\Subify\Entities\Plan as PlanEntity;
 
 /**
- * @property int $id
- * @property string $name
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property \Illuminate\Support\Carbon $deleted_at
+ * @property int                                                  $id
+ * @property string                                               $name
+ * @property \Illuminate\Support\Carbon                           $created_at
+ * @property \Illuminate\Support\Carbon                           $updated_at
+ * @property \Illuminate\Support\Carbon                           $deleted_at
  * @property \Illuminate\Database\Eloquent\Collection<PlanRegime> $regimes
  */
 class Plan extends Model
@@ -36,11 +36,6 @@ class Plan extends Model
         return config('subify.repositories.eloquent.plan.table');
     }
 
-    protected static function newFactory(): PlanFactory
-    {
-        return PlanFactory::new();
-    }
-
     public function toEntity(array $regimes = []): PlanEntity
     {
         $regimes = $this->relationLoaded('regimes')
@@ -54,5 +49,10 @@ class Plan extends Model
             $this->created_at,
             $this->updated_at,
         );
+    }
+
+    protected static function newFactory(): PlanFactory
+    {
+        return PlanFactory::new();
     }
 }

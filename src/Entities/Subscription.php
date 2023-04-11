@@ -2,8 +2,6 @@
 
 namespace OpenSaaS\Subify\Entities;
 
-use DateTime as DateTime;
-
 final class Subscription
 {
     public function __construct(
@@ -11,12 +9,12 @@ final class Subscription
         private string $subscriberIdentifier,
         private int $planId,
         private int $planRegimeId,
-        private ?DateTime $graceEndedAt,
-        private ?DateTime $trialEndedAt,
-        private ?DateTime $renewedAt,
-        private ?DateTime $expiredAt,
-        private DateTime $createdAt,
-        private DateTime $updatedAt,
+        private ?\DateTime $graceEndedAt,
+        private ?\DateTime $trialEndedAt,
+        private ?\DateTime $renewedAt,
+        private ?\DateTime $expiredAt,
+        private \DateTime $createdAt,
+        private \DateTime $updatedAt,
     ) {
     }
 
@@ -40,32 +38,32 @@ final class Subscription
         return $this->planRegimeId;
     }
 
-    public function getGraceEndedAt(): ?DateTime
+    public function getGraceEndedAt(): ?\DateTime
     {
         return $this->graceEndedAt;
     }
 
-    public function getTrialEndedAt(): ?DateTime
+    public function getTrialEndedAt(): ?\DateTime
     {
         return $this->trialEndedAt;
     }
 
-    public function getRenewedAt(): ?DateTime
+    public function getRenewedAt(): ?\DateTime
     {
         return $this->renewedAt;
     }
 
-    public function getExpiredAt(): ?DateTime
+    public function getExpiredAt(): ?\DateTime
     {
         return $this->expiredAt;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }

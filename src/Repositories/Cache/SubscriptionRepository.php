@@ -18,12 +18,36 @@ class SubscriptionRepository implements CacheSubscriptionRepository
     public function __construct(
         CacheFactory $cacheFactory,
         ConfigRepository $configRepository,
-    )
-    {
+    ) {
         $this->configRepository = $configRepository;
 
         $cacheStore = $this->configRepository->get('subify.repositories.cache.store');
         $this->cacheRepository = $cacheFactory->store($cacheStore);
+    }
+
+    public function find(string $subscriberIdentifier): ?Subscription
+    {
+        $subscriptionData = $this->cacheRepository->get($this->prefixed($subscriberIdentifier));
+
+        if (empty($subscriptionData)) {
+            return null;
+        }
+
+        return $this->optimizedArrayToEntity($subscriptionData);
+    }
+
+    public function save(Subscription $subscription): void
+    {
+        $this->cacheRepository->put(
+            $this->prefixed($subscription->getSubscriberIdentifier()),
+            $this->entityToOptimizedArray($subscription),
+            $this->configRepository->get('subify.repositories.cache.ttl'),
+        );
+    }
+
+    public function delete(string $subscriberIdentifier): void
+    {
+        $this->cacheRepository->delete($this->prefixed($subscriberIdentifier));
     }
 
     private function entityToOptimizedArray(Subscription $subscription): array
@@ -56,30 +80,5 @@ class SubscriptionRepository implements CacheSubscriptionRepository
             createdAt: $subscriptionData['c'],
             updatedAt: $subscriptionData['u'],
         );
-    }
-
-    public function find(string $subscriberIdentifier): ?Subscription
-    {
-        $subscriptionData = $this->cacheRepository->get($this->prefixed($subscriberIdentifier));
-
-        if (empty($subscriptionData)) {
-            return null;
-        }
-
-        return $this->optimizedArrayToEntity($subscriptionData);
-    }
-
-    public function save(Subscription $subscription): void
-    {
-        $this->cacheRepository->put(
-            $this->prefixed($subscription->getSubscriberIdentifier()),
-            $this->entityToOptimizedArray($subscription),
-            $this->configRepository->get('subify.repositories.cache.ttl'),
-        );
-    }
-
-    public function delete(string $subscriberIdentifier): void
-    {
-        $this->cacheRepository->delete($this->prefixed($subscriberIdentifier));
     }
 }

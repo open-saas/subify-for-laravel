@@ -2,15 +2,19 @@
 
 namespace Tests\Unit\Entities;
 
-use DateInterval;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\PlanRegimeFixture;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PlanRegimeTest extends TestCase
 {
     public function testItCalculatesNextExpiration(): void
     {
-        $periodicity = DateInterval::createFromDateString('1 month');
+        $periodicity = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'periodicity' => $periodicity,
@@ -24,7 +28,7 @@ class PlanRegimeTest extends TestCase
 
     public function testItCalculatesNextExpirationFromACertainDate(): void
     {
-        $periodicity = DateInterval::createFromDateString('1 month');
+        $periodicity = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'periodicity' => $periodicity,
@@ -47,7 +51,7 @@ class PlanRegimeTest extends TestCase
 
     public function testItCalculatesNextGraceEnd(): void
     {
-        $grace = DateInterval::createFromDateString('1 month');
+        $grace = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'grace' => $grace,
@@ -61,7 +65,7 @@ class PlanRegimeTest extends TestCase
 
     public function testItCalculatesNextGraceEndFromACertainDate(): void
     {
-        $grace = DateInterval::createFromDateString('1 month');
+        $grace = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'grace' => $grace,
@@ -84,7 +88,7 @@ class PlanRegimeTest extends TestCase
 
     public function testItCalculatesNextTrialEnd(): void
     {
-        $trial = DateInterval::createFromDateString('1 month');
+        $trial = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'trial' => $trial,
@@ -98,7 +102,7 @@ class PlanRegimeTest extends TestCase
 
     public function testItCalculatesNextTrialEndFromACertainDate(): void
     {
-        $trial = DateInterval::createFromDateString('1 month');
+        $trial = \DateInterval::createFromDateString('1 month');
 
         $regime = PlanRegimeFixture::create([
             'trial' => $trial,

@@ -2,7 +2,6 @@
 
 namespace OpenSaaS\Subify\Repositories\Eloquent\Models;
 
-use DateInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,16 +11,16 @@ use OpenSaaS\Subify\Entities\PlanRegime as PlanRegimeEntity;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
 
 /**
- * @property int $id
- * @property int $plan_id
- * @property string $name
- * @property float $price
- * @property int $periodicity
- * @property PeriodicityUnit $periodicity_unit
- * @property int $grace
- * @property PeriodicityUnit $grace_unit
- * @property int $trial
- * @property PeriodicityUnit $trial_unit
+ * @property int                        $id
+ * @property int                        $plan_id
+ * @property string                     $name
+ * @property float                      $price
+ * @property int                        $periodicity
+ * @property PeriodicityUnit            $periodicity_unit
+ * @property int                        $grace
+ * @property PeriodicityUnit            $grace_unit
+ * @property int                        $trial
+ * @property PeriodicityUnit            $trial_unit
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property \Illuminate\Support\Carbon $deleted_at
@@ -59,23 +58,18 @@ class PlanRegime extends Model
         return config('subify.repositories.eloquent.plan_regime.table');
     }
 
-    protected static function newFactory(): PlanRegimeFactory
-    {
-        return PlanRegimeFactory::new();
-    }
-
     public function toEntity(): PlanRegimeEntity
     {
         $periodicity = $this->periodicity
-            ? DateInterval::createFromDateString($this->periodicity . ' ' . $this->periodicity_unit->value)
+            ? \DateInterval::createFromDateString($this->periodicity.' '.$this->periodicity_unit->value)
             : null;
 
         $grace = $this->grace
-            ? DateInterval::createFromDateString($this->grace . ' ' . $this->grace_unit->value)
+            ? \DateInterval::createFromDateString($this->grace.' '.$this->grace_unit->value)
             : null;
 
         $trial = $this->trial
-            ? DateInterval::createFromDateString($this->trial . ' ' . $this->trial_unit->value)
+            ? \DateInterval::createFromDateString($this->trial.' '.$this->trial_unit->value)
             : null;
 
         return new PlanRegimeEntity(
@@ -89,5 +83,10 @@ class PlanRegime extends Model
             $this->created_at,
             $this->updated_at,
         );
+    }
+
+    protected static function newFactory(): PlanRegimeFactory
+    {
+        return PlanRegimeFactory::new();
     }
 }

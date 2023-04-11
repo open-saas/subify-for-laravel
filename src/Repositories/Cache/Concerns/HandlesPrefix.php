@@ -6,9 +6,8 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 trait HandlesPrefix
 {
-    private string $prefix;
-
     protected ConfigRepository $configRepository;
+    private string $prefix;
 
     protected function prefixed(string $key): string
     {
@@ -16,6 +15,6 @@ trait HandlesPrefix
             $this->prefix = $this->configRepository->get('subify.repositories.cache.prefix');
         }
 
-        return $this->prefix . $key;
+        return $this->prefix.$key;
     }
 }

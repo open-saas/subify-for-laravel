@@ -7,11 +7,16 @@ use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use Tests\Feature\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class BenefitTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_can_be_created(): void
+    public function testItCanBeCreated(): void
     {
         $benefit = Benefit::create([
             'name' => 'Test Benefit',
@@ -31,7 +36,7 @@ class BenefitTest extends TestCase
         ]);
     }
 
-    public function test_it_soft_deletes(): void
+    public function testItSoftDeletes(): void
     {
         $benefit = Benefit::factory()->create();
 
@@ -43,16 +48,17 @@ class BenefitTest extends TestCase
     /**
      * @dataProvider periodicityUnitProvider
      */
-    public function test_it_casts_periodicity_unit(PeriodicityUnit $unit): void
+    public function testItCastsPeriodicityUnit(PeriodicityUnit $unit): void
     {
         $benefit = Benefit::factory()
-            ->create(['periodicity_unit' => $unit]);
+            ->create(['periodicity_unit' => $unit])
+        ;
 
         $this->assertInstanceOf(PeriodicityUnit::class, $benefit->periodicity_unit);
         $this->assertEquals($unit->value, $benefit->periodicity_unit->value);
     }
 
-    public function test_it_throw_exception_when_periodicity_unit_is_invalid(): void
+    public function testItThrowExceptionWhenPeriodicityUnitIsInvalid(): void
     {
         $this->expectException(\ValueError::class);
 

@@ -4,21 +4,25 @@ namespace Tests\Unit\Repositories\Array;
 
 use OpenSaaS\Subify\Repositories\Array\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Tests\Fixtures\SubscriptionFixture;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SubscriptionRepositoryTest extends TestCase
 {
     private SubscriptionRepository $repository;
 
-    private ReflectionProperty $subscriptionsProperty;
+    private \ReflectionProperty $subscriptionsProperty;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->repository = new SubscriptionRepository();
-        $this->subscriptionsProperty = new ReflectionProperty($this->repository, 'subscriptionsByIdentifier');
+        $this->subscriptionsProperty = new \ReflectionProperty($this->repository, 'subscriptionsByIdentifier');
     }
 
     public function testFindReturnsSubscription(): void

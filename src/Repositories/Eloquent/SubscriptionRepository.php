@@ -18,8 +18,7 @@ class SubscriptionRepository implements DatabaseSubscriptionRepository
     public function __construct(
         private Container $container,
         private ConfigRepository $configRepository,
-    )
-    {
+    ) {
         $modelClass = $this->configRepository->get('subify.repositories.eloquent.subscription.model');
         $this->model = $this->container->make($modelClass);
     }
@@ -30,6 +29,7 @@ class SubscriptionRepository implements DatabaseSubscriptionRepository
             ->newQuery()
             ->where($this->subscriberIs($subscriberIdentifier))
             ->first()
-            ?->toEntity();
+            ?->toEntity()
+        ;
     }
 }

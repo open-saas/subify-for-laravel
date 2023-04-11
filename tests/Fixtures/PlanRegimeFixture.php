@@ -2,7 +2,6 @@
 
 namespace Tests\Fixtures;
 
-use DateInterval;
 use OpenSaaS\Subify\Entities\PlanRegime;
 
 class PlanRegimeFixture
@@ -14,9 +13,9 @@ class PlanRegimeFixture
             'planId' => fake()->numberBetween(1, 100),
             'name' => fake()->word(),
             'price' => fake()->randomFloat(2, 1, 100),
-            'periodicity' => DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
-            'grace' => DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
-            'trial' => DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
+            'periodicity' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
+            'grace' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
+            'trial' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
             'createdAt' => fake()->dateTime(),
             'updatedAt' => fake()->dateTime(),
         ], $attributes));

@@ -5,12 +5,16 @@ namespace Tests\Unit\Repositories\Cache;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Mockery;
 use Mockery\MockInterface;
 use OpenSaaS\Subify\Repositories\Cache\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\SubscriptionFixture;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SubscriptionRepositoryTest extends TestCase
 {
     private MockInterface|CacheRepository $cacheRepository;
@@ -23,19 +27,21 @@ class SubscriptionRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $cacheFactory = Mockery::mock(CacheFactory::class);
-        $this->cacheRepository = Mockery::mock(CacheRepository::class);
-        $this->configRepository = Mockery::mock(ConfigRepository::class);
+        $cacheFactory = \Mockery::mock(CacheFactory::class);
+        $this->cacheRepository = \Mockery::mock(CacheRepository::class);
+        $this->configRepository = \Mockery::mock(ConfigRepository::class);
 
         $this->configRepository
             ->shouldReceive('get')
             ->with('subify.repositories.cache.store')
-            ->andReturn('cache-store');
+            ->andReturn('cache-store')
+        ;
 
         $cacheFactory
             ->shouldReceive('store')
             ->with('cache-store')
-            ->andReturn($this->cacheRepository);
+            ->andReturn($this->cacheRepository)
+        ;
 
         $this->repository = new SubscriptionRepository(
             $cacheFactory,
@@ -47,26 +53,28 @@ class SubscriptionRepositoryTest extends TestCase
     {
         parent::tearDown();
 
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testGetsStoreOnConstructor(): void
     {
-        $cacheFactory = Mockery::mock(CacheFactory::class);
-        $cacheRepository = Mockery::mock(CacheRepository::class);
-        $configRepository = Mockery::mock(ConfigRepository::class);
+        $cacheFactory = \Mockery::mock(CacheFactory::class);
+        $cacheRepository = \Mockery::mock(CacheRepository::class);
+        $configRepository = \Mockery::mock(ConfigRepository::class);
 
         $configRepository
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.store')
-            ->andReturn('cache-store');
+            ->andReturn('cache-store')
+        ;
 
         $cacheFactory
             ->shouldReceive('store')
             ->once()
             ->with('cache-store')
-            ->andReturn($cacheRepository);
+            ->andReturn($cacheRepository)
+        ;
 
         new SubscriptionRepository($cacheFactory, $configRepository);
 
@@ -81,7 +89,8 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:');
+            ->andReturn('prefix:')
+        ;
 
         $this->cacheRepository
             ->shouldReceive('get')
@@ -98,7 +107,8 @@ class SubscriptionRepositoryTest extends TestCase
                 'e' => $expectedSubscription->getExpiredAt(),
                 'c' => $expectedSubscription->getCreatedAt(),
                 'u' => $expectedSubscription->getUpdatedAt(),
-            ]);
+            ])
+        ;
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
 
@@ -111,13 +121,15 @@ class SubscriptionRepositoryTest extends TestCase
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:');
+            ->andReturn('prefix:')
+        ;
 
         $this->cacheRepository
             ->shouldReceive('get')
             ->once()
             ->with('prefix:subscriber-identifier')
-            ->andReturnNull();
+            ->andReturnNull()
+        ;
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
 
@@ -127,19 +139,21 @@ class SubscriptionRepositoryTest extends TestCase
     public function testSaveCallsPutOnCacheRepository(): void
     {
         $subscription = SubscriptionFixture::create();
-        $expectedSubscriberIdentifier = 'prefix:' . $subscription->getSubscriberIdentifier();
+        $expectedSubscriberIdentifier = 'prefix:'.$subscription->getSubscriberIdentifier();
 
         $this->configRepository
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:');
+            ->andReturn('prefix:')
+        ;
 
         $this->configRepository
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.ttl')
-            ->andReturn(60);
+            ->andReturn(60)
+        ;
 
         $this->cacheRepository
             ->shouldReceive('put')
@@ -155,7 +169,8 @@ class SubscriptionRepositoryTest extends TestCase
                 'e' => $subscription->getExpiredAt(),
                 'c' => $subscription->getCreatedAt(),
                 'u' => $subscription->getUpdatedAt(),
-            ], 60);
+            ], 60)
+        ;
 
         $this->repository->save($subscription);
 
@@ -165,18 +180,20 @@ class SubscriptionRepositoryTest extends TestCase
     public function testDeleteCallsForgetOnCacheRepository(): void
     {
         $subscription = SubscriptionFixture::create();
-        $expectedSubscriberIdentifier = 'prefix:' . $subscription->getSubscriberIdentifier();
+        $expectedSubscriberIdentifier = 'prefix:'.$subscription->getSubscriberIdentifier();
 
         $this->configRepository
             ->shouldReceive('get')
             ->once()
             ->with('subify.repositories.cache.prefix')
-            ->andReturn('prefix:');
+            ->andReturn('prefix:')
+        ;
 
         $this->cacheRepository
             ->shouldReceive('delete')
             ->once()
-            ->with($expectedSubscriberIdentifier);
+            ->with($expectedSubscriberIdentifier)
+        ;
 
         $this->repository->delete($subscription->getSubscriberIdentifier());
 

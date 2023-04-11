@@ -2,8 +2,6 @@
 
 namespace OpenSaaS\Subify\Entities;
 
-use DateTime as DateTime;
-
 final class Plan
 {
     public function __construct(
@@ -11,8 +9,8 @@ final class Plan
         private string $name,
         /** @var PlanRegime[] */
         private array $regimes,
-        private DateTime $createdAt,
-        private DateTime $updatedAt,
+        private \DateTime $createdAt,
+        private \DateTime $updatedAt,
     ) {
     }
 
@@ -31,12 +29,12 @@ final class Plan
         return $this->regimes;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }

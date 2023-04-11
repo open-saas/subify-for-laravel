@@ -2,10 +2,15 @@
 
 namespace Tests\Feature\Repositories\Eloquent;
 
-use OpenSaaS\Subify\Repositories\Eloquent\SubscriptionRepository;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
+use OpenSaaS\Subify\Repositories\Eloquent\SubscriptionRepository;
 use Tests\Feature\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SubscriptionRepositoryTest extends TestCase
 {
     private SubscriptionRepository $repository;
@@ -24,11 +29,12 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->addDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->subDay(),
-            ]);
+            ])
+        ;
 
         $activeSubscriptionIdentifier = $activeSubscription->subscriber_type
-            . ':'
-            . $activeSubscription->subscriber_id;
+            .':'
+            .$activeSubscription->subscriber_id;
 
         $this->assertEquals(
             $activeSubscription->toEntity(),
@@ -43,11 +49,12 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->subDay(),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionIdentifier = $expiredSubscription->subscriber_type
-            . ':'
-            . $expiredSubscription->subscriber_id;
+            .':'
+            .$expiredSubscription->subscriber_id;
 
         $this->assertNull(
             $this->repository->findActive($expiredSubscriptionIdentifier)
@@ -68,11 +75,12 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->addDay(),
                 'trial_ended_at' => now()->subDay(),
-            ]);
+            ])
+        ;
 
         $subscriptionIdentifier = $subscription->subscriber_type
-            . ':'
-            . $subscription->subscriber_id;
+            .':'
+            .$subscription->subscriber_id;
 
         $this->assertEquals(
             $subscription->toEntity(),
@@ -87,11 +95,12 @@ class SubscriptionRepositoryTest extends TestCase
                 'expired_at' => now()->subDay(),
                 'grace_ended_at' => now()->subDay(),
                 'trial_ended_at' => now()->addDay(),
-            ]);
+            ])
+        ;
 
         $subscriptionIdentifier = $subscription->subscriber_type
-            . ':'
-            . $subscription->subscriber_id;
+            .':'
+            .$subscription->subscriber_id;
 
         $this->assertEquals(
             $subscription->toEntity(),
@@ -105,11 +114,12 @@ class SubscriptionRepositoryTest extends TestCase
             ->create([
                 'expired_at' => now()->addDay(),
                 'started_at' => now()->subDay(),
-            ]);
+            ])
+        ;
 
         $subscriptionIdentifier = $subscription->subscriber_type
-            . ':'
-            . $subscription->subscriber_id;
+            .':'
+            .$subscription->subscriber_id;
 
         $this->assertEquals(
             $subscription->toEntity(),
@@ -123,11 +133,12 @@ class SubscriptionRepositoryTest extends TestCase
             ->create([
                 'expired_at' => now()->addDay(),
                 'started_at' => now()->addDay(),
-            ]);
+            ])
+        ;
 
         $subscriptionIdentifier = $subscription->subscriber_type
-            . ':'
-            . $subscription->subscriber_id;
+            .':'
+            .$subscription->subscriber_id;
 
         $this->assertNull($this->repository->findActive($subscriptionIdentifier));
     }

@@ -9,12 +9,12 @@ use OpenSaaS\Subify\Database\Factories\BenefitFactory;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
 
 /**
- * @property int $id
- * @property string $name
- * @property bool $is_consumable
- * @property bool $is_quota
- * @property int $periodicity
- * @property PeriodicityUnit $periodicity_unit
+ * @property int                        $id
+ * @property string                     $name
+ * @property bool                       $is_consumable
+ * @property bool                       $is_quota
+ * @property int                        $periodicity
+ * @property PeriodicityUnit            $periodicity_unit
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property \Illuminate\Support\Carbon $deleted_at

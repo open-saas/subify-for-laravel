@@ -12,11 +12,11 @@ use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Concerns\HasSubscriberIdentifier;
 
 /**
- * @property int $id
- * @property int $plan_id
- * @property int $plan_regime_id
- * @property string $subscriber_id
- * @property string $subscriber_type
+ * @property int                        $id
+ * @property int                        $plan_id
+ * @property int                        $plan_regime_id
+ * @property string                     $subscriber_id
+ * @property string                     $subscriber_type
  * @property \Illuminate\Support\Carbon $grace_ended_at
  * @property \Illuminate\Support\Carbon $trial_ended_at
  * @property \Illuminate\Support\Carbon $renewed_at
@@ -52,23 +52,11 @@ class Subscription extends Model
         'started_at',
     ];
 
-    protected static function booted()
-    {
-        static::addGlobalScope('expirableWithGraceAndTrial', function (Builder $builder) {
-            $builder->where('started_at', '<=', now())
-                ->where(fn (Builder $query) =>
-                    $query->whereNull('expired_at')
-                        ->orWhere('expired_at', '>', now())
-                        ->orWhere('grace_ended_at', '>', now())
-                        ->orWhere('trial_ended_at', '>', now())
-                );
-        });
-    }
-
     public function scopeOnlyExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
-            ->where('expired_at', '<=', now());
+            ->where('expired_at', '<=', now())
+        ;
     }
 
     public function scopeWithExpired(Builder $query): Builder
@@ -80,20 +68,23 @@ class Subscription extends Model
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
             ->where('expired_at', '<=', now())
-            ->where('grace_ended_at', '>', now());
+            ->where('grace_ended_at', '>', now())
+        ;
     }
 
     public function scopeInTrial(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
             ->where('expired_at', '<=', now())
-            ->where('trial_ended_at', '>', now());
+            ->where('trial_ended_at', '>', now())
+        ;
     }
 
     public function scopeUnstarted(Builder $query): Builder
     {
         return $query->withoutGlobalScope('expirableWithGraceAndTrial')
-            ->where('started_at', '>', now());
+            ->where('started_at', '>', now())
+        ;
     }
 
     public function plan(): BelongsTo
@@ -125,6 +116,20 @@ class Subscription extends Model
             $this->created_at,
             $this->updated_at,
         );
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('expirableWithGraceAndTrial', function (Builder $builder) {
+            $builder->where('started_at', '<=', now())
+                ->where(
+                    fn (Builder $query) => $query->whereNull('expired_at')
+                        ->orWhere('expired_at', '>', now())
+                        ->orWhere('grace_ended_at', '>', now())
+                        ->orWhere('trial_ended_at', '>', now())
+                )
+            ;
+        });
     }
 
     protected static function newFactory(): SubscriptionFactory

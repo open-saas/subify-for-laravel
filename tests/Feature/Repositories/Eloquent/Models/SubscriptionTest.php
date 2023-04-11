@@ -9,11 +9,16 @@ use OpenSaaS\Subify\Repositories\Eloquent\Models\PlanRegime;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 use Tests\Feature\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SubscriptionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_can_be_created(): void
+    public function testItCanBeCreated(): void
     {
         $plan = Plan::factory()->create();
         $planRegime = PlanRegime::factory()->create();
@@ -44,7 +49,7 @@ class SubscriptionTest extends TestCase
         ]);
     }
 
-    public function test_it_soft_deletes(): void
+    public function testItSoftDeletes(): void
     {
         $subscription = Subscription::factory()->create();
 
@@ -53,71 +58,79 @@ class SubscriptionTest extends TestCase
         $this->assertSoftDeleted($subscription);
     }
 
-    public function test_it_belongs_to_a_plan(): void
+    public function testItBelongsToAPlan(): void
     {
         $plan = Plan::factory()->create();
 
         $subscription = Subscription::factory()
             ->for($plan)
-            ->create();
+            ->create()
+        ;
 
         $this->assertEquals($plan->id, $subscription->plan->id);
     }
 
-    public function test_it_belongs_to_a_plan_regime(): void
+    public function testItBelongsToAPlanRegime(): void
     {
         $planRegime = PlanRegime::factory()->create();
 
         $subscription = Subscription::factory()
             ->for($planRegime)
-            ->create();
+            ->create()
+        ;
 
         $this->assertEquals($planRegime->id, $subscription->planRegime->id);
     }
 
-    public function test_it_has_a_global_scope_to_only_return_not_expired(): void
+    public function testItHasAGlobalScopeToOnlyReturnNotExpired(): void
     {
         $expiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertEmpty(Subscription::find($expiredSubscription->id));
         $this->assertNotEmpty(Subscription::find($unexpiredSubscription->id));
@@ -127,49 +140,55 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::find($expiredSubscriptionWithPastTrial->id));
     }
 
-    public function test_it_has_a_scope_to_only_return_expired(): void
+    public function testItHasAScopeToOnlyReturnExpired(): void
     {
         $expiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertNotEmpty(Subscription::onlyExpired()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::onlyExpired()->find($unexpiredSubscription->id));
@@ -179,49 +198,55 @@ class SubscriptionTest extends TestCase
         $this->assertNotEmpty(Subscription::onlyExpired()->find($expiredSubscriptionWithPastTrial->id));
     }
 
-    public function test_it_has_a_scope_to_return_with_expired(): void
+    public function testItHasAScopeToReturnWithExpired(): void
     {
         $expiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertNotEmpty(Subscription::withExpired()->find($expiredSubscription->id));
         $this->assertNotEmpty(Subscription::withExpired()->find($unexpiredSubscription->id));
@@ -231,49 +256,55 @@ class SubscriptionTest extends TestCase
         $this->assertNotEmpty(Subscription::withExpired()->find($expiredSubscriptionWithPastTrial->id));
     }
 
-    public function test_it_has_a_scope_to_only_return_in_grace(): void
+    public function testItHasAScopeToOnlyReturnInGrace(): void
     {
         $expiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertEmpty(Subscription::inGrace()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::inGrace()->find($unexpiredSubscription->id));
@@ -283,49 +314,55 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::inGrace()->find($expiredSubscriptionWithPastTrial->id));
     }
 
-    public function test_it_has_a_scope_to_only_return_in_trial(): void
+    public function testItHasAScopeToOnlyReturnInTrial(): void
     {
         $expiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unexpiredSubscription = Subscription::factory()
             ->create([
                 'expired_at' => now()->addDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastGrace = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => now()->subDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $expiredSubscriptionWithPastTrial = Subscription::factory()
             ->create([
                 'expired_at' => now()->subDays(30),
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->subDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscription->id));
         $this->assertEmpty(Subscription::inTrial()->find($unexpiredSubscription->id));
@@ -335,7 +372,7 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscriptionWithPastTrial->id));
     }
 
-    public function test_it_has_a_global_scope_to_only_started_subscriptions(): void
+    public function testItHasAGlobalScopeToOnlyStartedSubscriptions(): void
     {
         $startedSubscription = Subscription::factory()
             ->create([
@@ -343,7 +380,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscription = Subscription::factory()
             ->create([
@@ -351,7 +389,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscriptionWithGrace = Subscription::factory()
             ->create([
@@ -359,7 +398,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscriptionWithTrial = Subscription::factory()
             ->create([
@@ -367,7 +407,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertNotEmpty(Subscription::find($startedSubscription->id));
         $this->assertEmpty(Subscription::find($unstartedSubscription->id));
@@ -375,7 +416,7 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::find($unstartedSubscriptionWithTrial->id));
     }
 
-    public function test_it_has_a_scope_to_return_only_unstarted_subscriptions(): void
+    public function testItHasAScopeToReturnOnlyUnstartedSubscriptions(): void
     {
         $startedSubscription = Subscription::factory()
             ->create([
@@ -383,7 +424,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscription = Subscription::factory()
             ->create([
@@ -391,7 +433,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscriptionWithGrace = Subscription::factory()
             ->create([
@@ -399,7 +442,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => now()->addDays(30),
                 'trial_ended_at' => null,
-            ]);
+            ])
+        ;
 
         $unstartedSubscriptionWithTrial = Subscription::factory()
             ->create([
@@ -407,7 +451,8 @@ class SubscriptionTest extends TestCase
                 'expired_at' => null,
                 'grace_ended_at' => null,
                 'trial_ended_at' => now()->addDays(30),
-            ]);
+            ])
+        ;
 
         $this->assertEmpty(Subscription::unstarted()->find($startedSubscription->id));
         $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscription->id));
@@ -415,12 +460,12 @@ class SubscriptionTest extends TestCase
         $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscriptionWithTrial->id));
     }
 
-    public function test_it_has_a_method_to_convert_to_entity(): void
+    public function testItHasAMethodToConvertToEntity(): void
     {
         $subscription = Subscription::factory()->create();
         $subscriptionEntity = $subscription->toEntity();
 
-        $expectedSubscriberIdentifier = $subscription->subscriber_id . ':' . $subscription->subscriber_type;
+        $expectedSubscriberIdentifier = $subscription->subscriber_id.':'.$subscription->subscriber_type;
 
         $this->assertInstanceOf(SubscriptionEntity::class, $subscriptionEntity);
         $this->assertEquals($subscription->id, $subscriptionEntity->getId());

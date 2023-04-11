@@ -16,6 +16,6 @@ trait HasSubscriberIdentifier
 
     private function toSubscriberIdentifier(string $subscriberId, string $subscriberType): string
     {
-        return $subscriberType . ':' . $subscriberId;
+        return $subscriberType.':'.$subscriberId;
     }
 }
