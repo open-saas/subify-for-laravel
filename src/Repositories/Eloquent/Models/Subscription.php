@@ -11,6 +11,21 @@ use OpenSaaS\Subify\Database\Factories\SubscriptionFactory;
 use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Concerns\HasSubscriberIdentifier;
 
+/**
+ * @property int $id
+ * @property int $plan_id
+ * @property int $plan_regime_id
+ * @property string $subscriber_id
+ * @property string $subscriber_type
+ * @property \Illuminate\Support\Carbon $grace_ended_at
+ * @property \Illuminate\Support\Carbon $trial_ended_at
+ * @property \Illuminate\Support\Carbon $renewed_at
+ * @property \Illuminate\Support\Carbon $expired_at
+ * @property \Illuminate\Support\Carbon $started_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
+ */
 class Subscription extends Model
 {
     use HasFactory;

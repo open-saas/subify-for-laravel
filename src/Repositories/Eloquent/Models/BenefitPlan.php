@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use OpenSaaS\Subify\Database\Factories\BenefitPlanFactory;
 
+/**
+ * @property int $id
+ * @property int $benefit_id
+ * @property int $plan_id
+ * @property float $charges
+ * @property bool $is_unlimited
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
+ */
 class BenefitPlan extends Pivot
 {
     use HasFactory;

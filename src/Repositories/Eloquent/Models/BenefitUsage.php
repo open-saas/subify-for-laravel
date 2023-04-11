@@ -9,6 +9,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitUsageFactory;
 
+/**
+ * @property int $id
+ * @property int $benefit_id
+ * @property int $subscriber_id
+ * @property string $subscriber_type
+ * @property float $amount
+ * @property \Illuminate\Support\Carbon $expired_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
+ */
 class BenefitUsage extends Model
 {
     use HasFactory;

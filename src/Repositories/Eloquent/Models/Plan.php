@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanFactory;
 use OpenSaaS\Subify\Entities\Plan as PlanEntity;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection<PlanRegime> $regimes
+ */
 class Plan extends Model
 {
     use HasFactory;

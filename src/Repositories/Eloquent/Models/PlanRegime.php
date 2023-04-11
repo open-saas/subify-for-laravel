@@ -11,6 +11,21 @@ use OpenSaaS\Subify\Database\Factories\PlanRegimeFactory;
 use OpenSaaS\Subify\Entities\PlanRegime as PlanRegimeEntity;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
 
+/**
+ * @property int $id
+ * @property int $plan_id
+ * @property string $name
+ * @property float $price
+ * @property int $periodicity
+ * @property PeriodicityUnit $periodicity_unit
+ * @property int $grace
+ * @property PeriodicityUnit $grace_unit
+ * @property int $trial
+ * @property PeriodicityUnit $trial_unit
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
+ */
 class PlanRegime extends Model
 {
     use HasFactory;
