@@ -22,6 +22,7 @@ class Subscription extends Model
         'trial_ended_at' => 'datetime',
         'renewed_at' => 'datetime',
         'expired_at' => 'datetime',
+        'started_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -33,17 +34,19 @@ class Subscription extends Model
         'trial_ended_at',
         'renewed_at',
         'expired_at',
+        'started_at',
     ];
 
     protected static function booted()
     {
         static::addGlobalScope('expirableWithGraceAndTrial', function (Builder $builder) {
-            $builder->where(fn (Builder $query) =>
-                $query->whereNull('expired_at')
-                    ->orWhere('expired_at', '>', now())
-                    ->orWhere('grace_ended_at', '>', now())
-                    ->orWhere('trial_ended_at', '>', now())
-            );
+            $builder->where('started_at', '<=', now())
+                ->where(fn (Builder $query) =>
+                    $query->whereNull('expired_at')
+                        ->orWhere('expired_at', '>', now())
+                        ->orWhere('grace_ended_at', '>', now())
+                        ->orWhere('trial_ended_at', '>', now())
+                );
         });
     }
 

@@ -22,6 +22,7 @@ class SubscriptionFactory extends Factory
             'trial_ended_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),
             'renewed_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),
             'expired_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),
+            'started_at' => $this->faker->dateTimeBetween('-1 year', '-1 month'),
         ];
     }
 }
