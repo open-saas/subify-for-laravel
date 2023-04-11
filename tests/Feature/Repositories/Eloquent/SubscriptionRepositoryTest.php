@@ -98,4 +98,37 @@ class SubscriptionRepositoryTest extends TestCase
             $this->repository->findActive($subscriptionIdentifier)
         );
     }
+
+    public function testFindActiveReturnsStartedSubscription(): void
+    {
+        $subscription = Subscription::factory()
+            ->create([
+                'expired_at' => now()->addDay(),
+                'started_at' => now()->subDay(),
+            ]);
+
+        $subscriptionIdentifier = $subscription->subscriber_type
+            . ':'
+            . $subscription->subscriber_id;
+
+        $this->assertEquals(
+            $subscription->toEntity(),
+            $this->repository->findActive($subscriptionIdentifier)
+        );
+    }
+
+    public function testFindActiveReturnsNullWhenThereAreNoStartedSubscriptions(): void
+    {
+        $subscription = Subscription::factory()
+            ->create([
+                'expired_at' => now()->addDay(),
+                'started_at' => now()->addDay(),
+            ]);
+
+        $subscriptionIdentifier = $subscription->subscriber_type
+            . ':'
+            . $subscription->subscriber_id;
+
+        $this->assertNull($this->repository->findActive($subscriptionIdentifier));
+    }
 }
