@@ -75,6 +75,12 @@ class Subscription extends Model
             ->where('trial_ended_at', '>', now());
     }
 
+    public function scopeUnstarted(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope('expirableWithGraceAndTrial')
+            ->where('started_at', '>', now());
+    }
+
     public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
