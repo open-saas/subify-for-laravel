@@ -1,6 +1,7 @@
 name: static analysis
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -35,7 +36,9 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+          command: |
+            composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+            composer install --working-dir=tools/php-code-sniffer
 
       - name: Execute type checking
-        run: vendor/bin/phpstan
+        run: composer lint
