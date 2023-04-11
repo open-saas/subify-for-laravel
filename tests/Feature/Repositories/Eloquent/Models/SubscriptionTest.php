@@ -27,6 +27,7 @@ class SubscriptionTest extends TestCase
             'trial_ended_at' => now()->addDays(30),
             'renewed_at' => now()->addDays(30),
             'expired_at' => now()->addDays(30),
+            'started_at' => now()->subDays(30),
         ]);
 
         $this->assertDatabaseHas('subscriptions', [
@@ -39,6 +40,7 @@ class SubscriptionTest extends TestCase
             'trial_ended_at' => $subscription->trial_ended_at,
             'renewed_at' => $subscription->renewed_at,
             'expired_at' => $subscription->expired_at,
+            'started_at' => $subscription->started_at,
         ]);
     }
 
@@ -331,6 +333,46 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscriptionWithPastGrace->id));
         $this->assertNotEmpty(Subscription::inTrial()->find($expiredSubscriptionWithTrial->id));
         $this->assertEmpty(Subscription::inTrial()->find($expiredSubscriptionWithPastTrial->id));
+    }
+
+    public function test_it_has_a_global_scope_to_only_started_subscriptions(): void
+    {
+        $startedSubscription = Subscription::factory()
+            ->create([
+                'started_at' => now()->subDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscription = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscriptionWithGrace = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => now()->addDays(30),
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscriptionWithTrial = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => now()->addDays(30),
+            ]);
+
+        $this->assertNotEmpty(Subscription::find($startedSubscription->id));
+        $this->assertEmpty(Subscription::find($unstartedSubscription->id));
+        $this->assertEmpty(Subscription::find($unstartedSubscriptionWithGrace->id));
+        $this->assertEmpty(Subscription::find($unstartedSubscriptionWithTrial->id));
     }
 
     public function test_it_has_a_method_to_convert_to_entity(): void
