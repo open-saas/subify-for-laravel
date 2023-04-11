@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
       - '*.x'
   pull_request:
 
@@ -38,7 +38,7 @@ jobs:
           max_attempts: 5
           command: |
             composer update --prefer-stable --prefer-dist --no-interaction --no-progress
-            composer install --working-dir=tools/php-code-sniffer
+            composer install --working-dir=tools/php-cs-fixer
 
       - name: Execute type checking
         run: composer lint
