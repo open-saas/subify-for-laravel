@@ -1,13 +1,12 @@
-name: tests
+name: "Tests"
 
 on:
   push:
     branches:
       - main
+      - develop
       - '*.x'
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
 
 permissions:
   contents: read
