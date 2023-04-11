@@ -375,6 +375,46 @@ class SubscriptionTest extends TestCase
         $this->assertEmpty(Subscription::find($unstartedSubscriptionWithTrial->id));
     }
 
+    public function test_it_has_a_scope_to_return_only_unstarted_subscriptions(): void
+    {
+        $startedSubscription = Subscription::factory()
+            ->create([
+                'started_at' => now()->subDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscription = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscriptionWithGrace = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => now()->addDays(30),
+                'trial_ended_at' => null,
+            ]);
+
+        $unstartedSubscriptionWithTrial = Subscription::factory()
+            ->create([
+                'started_at' => now()->addDays(30),
+                'expired_at' => null,
+                'grace_ended_at' => null,
+                'trial_ended_at' => now()->addDays(30),
+            ]);
+
+        $this->assertEmpty(Subscription::unstarted()->find($startedSubscription->id));
+        $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscription->id));
+        $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscriptionWithGrace->id));
+        $this->assertNotEmpty(Subscription::unstarted()->find($unstartedSubscriptionWithTrial->id));
+    }
+
     public function test_it_has_a_method_to_convert_to_entity(): void
     {
         $subscription = Subscription::factory()->create();
