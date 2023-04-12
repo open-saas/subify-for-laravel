@@ -1,3 +1,3 @@
 # Changelog
 
-All notable changes to `laravel-subify` will be documented in this file.
+All notable changes to `subify` will be documented in this file.

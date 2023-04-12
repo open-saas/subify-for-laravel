@@ -1,10 +1,10 @@
 {
-    "name": "open-saas/laravel-subify",
+    "name": "open-saas/subify",
     "description": "A straightforward way to handle subscriptions in Laravel.",
     "keywords": [
         "open-saas",
         "laravel",
-        "laravel-subify",
+        "subify",
         "subscriptions",
         "subscription",
         "features",
@@ -14,7 +14,7 @@
         "plans",
         "plan"
     ],
-    "homepage": "https://github.com/open-saas/laravel-subify",
+    "homepage": "https://github.com/open-saas/subify",
     "license": "MIT",
     "authors": [
         {
