@@ -1,6 +1,8 @@
-<h1 align="center">Subify &#8212; Subscriptions for Laravel</h1>
+<p align="center"><img src="/art/banner.png" alt="Social Card of Subify"></p>
 
-<p align="center">
+<h1>Subify &#8212; Subscriptions for Laravel</h1>
+
+<p>
 <a href="https://packagist.org/packages/open-saas/subify"><img alt="Latest Version on Packagist" src="https://img.shields.io/packagist/v/open-saas/subify.svg?style=flat-square"></a>
 <a href="https://github.com/open-saas/subify/actions/workflows/tests.yml"><img src="https://github.com/open-saas/subify/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
 <a href="https://github.com/open-saas/subify/actions/workflows/static-analysis.yml"><img src="https://github.com/open-saas/subify/actions/workflows/static-analysis.yml/badge.svg" alt="static analysis"></a>
@@ -12,7 +14,7 @@
 
 A straightforward way to handle subscriptions in Laravel.
 
-## Terminology
+### Terminology
 
 We have opted to use the term "benefit" rather than "feature" due to its broader scope. While a feature may be a benefit, benefits can include aspects such as quotas or limits.
 
