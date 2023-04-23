@@ -11,8 +11,6 @@ final class PlanRegime
     public function __construct(
         private int $id,
         private int $planId,
-        private string $name,
-        private float $price,
         private ?\DateInterval $periodicity,
         private ?\DateInterval $grace,
         private ?\DateInterval $trial,
@@ -27,16 +25,6 @@ final class PlanRegime
     public function getPlanId(): int
     {
         return $this->planId;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
     }
 
     public function getPeriodicity(): ?\DateInterval

@@ -68,8 +68,6 @@ class PlanRegime extends Model
         return new PlanRegimeEntity(
             $this->id,
             $this->plan_id,
-            $this->name,
-            $this->price,
             $this->periodicityToDateInterval($this->periodicity_unit, $this->periodicity),
             $this->periodicityToDateInterval($this->grace_unit, $this->grace),
             $this->periodicityToDateInterval($this->trial_unit, $this->trial),

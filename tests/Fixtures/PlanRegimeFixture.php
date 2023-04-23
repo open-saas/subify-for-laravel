@@ -11,8 +11,6 @@ class PlanRegimeFixture
         return new PlanRegime(...array_merge([
             'id' => fake()->numberBetween(1, 100),
             'planId' => fake()->numberBetween(1, 100),
-            'name' => fake()->word(),
-            'price' => fake()->randomFloat(2, 1, 100),
             'periodicity' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
             'grace' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
             'trial' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),

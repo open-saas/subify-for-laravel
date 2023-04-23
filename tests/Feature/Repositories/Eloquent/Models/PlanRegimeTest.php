@@ -162,8 +162,6 @@ class PlanRegimeTest extends TestCase
 
         $this->assertEquals($planRegime->id, $entity->getId());
         $this->assertEquals($planRegime->plan_id, $entity->getPlanId());
-        $this->assertEquals($planRegime->name, $entity->getName());
-        $this->assertEquals($planRegime->price, $entity->getPrice());
         $this->assertEquals($expectedPeriodicity, $entity->getPeriodicity());
         $this->assertEquals($expectedGrace, $entity->getGrace());
         $this->assertEquals($expectedTrial, $entity->getTrial());
