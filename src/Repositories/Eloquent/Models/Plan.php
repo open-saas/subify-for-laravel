@@ -36,18 +36,14 @@ class Plan extends Model
         return config('subify.repositories.eloquent.plan.table');
     }
 
-    public function toEntity(array $regimes = []): PlanEntity
+    /**
+     * @internal
+     */
+    public function toEntity(): PlanEntity
     {
-        $regimes = $this->relationLoaded('regimes')
-            ? $this->regimes->map->toEntity()->toArray()
-            : $regimes;
-
         return new PlanEntity(
             $this->id,
             $this->name,
-            $regimes,
-            $this->created_at,
-            $this->updated_at,
         );
     }
 

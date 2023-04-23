@@ -3,8 +3,8 @@
 namespace OpenSaaS\Subify\Decorators;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use OpenSaaS\Subify\Contracts\Array\SubscriptionRepository as ArraySubscriptionRepository;
 use OpenSaaS\Subify\Contracts\Cache\SubscriptionRepository as CacheSubscriptionRepository;
+use OpenSaaS\Subify\Contracts\Context\SubscriptionRepository as ContextSubscriptionRepository;
 use OpenSaaS\Subify\Contracts\Database\SubscriptionRepository as DatabaseSubscriptionRepository;
 use OpenSaaS\Subify\Contracts\Decorators\SubscriptionDecorator as SubscriptionDecoratorContract;
 use OpenSaaS\Subify\Entities\Subscription;
@@ -15,26 +15,26 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
         private ConfigRepository $configRepository,
         private DatabaseSubscriptionRepository $databaseSubscriptionRepository,
         private CacheSubscriptionRepository $cacheSubscriptionRepository,
-        private ArraySubscriptionRepository $arraySubscriptionRepository,
+        private ContextSubscriptionRepository $contextSubscriptionRepository,
     ) {
     }
 
     public function find(string $subscriberIdentifier): ?Subscription
     {
-        $subscription = $this->arraySubscriptionRepository->find($subscriberIdentifier);
-
-        if ($subscription) {
-            return $subscription;
+        if ($this->contextSubscriptionRepository->has($subscriberIdentifier)) {
+            return $this->contextSubscriptionRepository->find($subscriberIdentifier);
         }
 
-        return $this->isCacheEnabled()
-            ? $this->findWithCache($subscriberIdentifier)
-            : $this->findWithoutCache($subscriberIdentifier);
+        $this->isCacheEnabled()
+            ? $this->loadWithCache($subscriberIdentifier)
+            : $this->loadWithoutCache($subscriberIdentifier);
+
+        return $this->contextSubscriptionRepository->find($subscriberIdentifier);
     }
 
-    public function flush(): void
+    public function flushContext(): void
     {
-        $this->arraySubscriptionRepository->flush();
+        $this->contextSubscriptionRepository->flush();
     }
 
     private function isCacheEnabled(): bool
@@ -42,38 +42,22 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
         return $this->configRepository->get('subify.repositories.cache.subscription.enabled');
     }
 
-    private function findWithCache(string $subscriberIdentifier): ?Subscription
+    private function loadWithCache(string $subscriberIdentifier): void
     {
-        $subscription = $this->cacheSubscriptionRepository->find($subscriberIdentifier);
-
-        if ($subscription) {
-            $this->arraySubscriptionRepository->save($subscription);
-
-            return $subscription;
-        }
-
-        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
-
-        if ($subscription) {
-            $this->arraySubscriptionRepository->save($subscription);
+        if ($this->cacheSubscriptionRepository->has($subscriberIdentifier)) {
+            $subscription = $this->cacheSubscriptionRepository->find($subscriberIdentifier);
+        } else {
+            $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
             $this->cacheSubscriptionRepository->save($subscription);
-
-            return $subscription;
         }
 
-        return null;
+        $this->contextSubscriptionRepository->save($subscription);
     }
 
-    private function findWithoutCache(string $subscriberIdentifier): ?Subscription
+    private function loadWithoutCache(string $subscriberIdentifier): void
     {
         $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
 
-        if ($subscription) {
-            $this->arraySubscriptionRepository->save($subscription);
-
-            return $subscription;
-        }
-
-        return null;
+        $this->contextSubscriptionRepository->save($subscription);
     }
 }

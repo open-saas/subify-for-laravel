@@ -1,11 +1,11 @@
 <?php
 
-namespace OpenSaaS\Subify\Repositories\Array;
+namespace OpenSaaS\Subify\Repositories\Context;
 
-use OpenSaaS\Subify\Contracts\Array\SubscriptionRepository as ArraySubscriptionRepository;
+use OpenSaaS\Subify\Contracts\Context\SubscriptionRepository as ContextSubscriptionRepository;
 use OpenSaaS\Subify\Entities\Subscription;
 
-class SubscriptionRepository implements ArraySubscriptionRepository
+class SubscriptionRepository implements ContextSubscriptionRepository
 {
     /** @var array<string, Subscription> */
     private array $subscriptionsByIdentifier = [];

@@ -30,6 +30,7 @@
         "illuminate/database": "^10.0"
     },
     "require-dev": {
+        "brianium/paratest": "^7.1",
         "mockery/mockery": "^1.5.1",
         "orchestra/testbench": "^8.1",
         "phpstan/phpstan": "^1.10",
@@ -53,7 +54,7 @@
             "@phpstan",
             "@phpcsfixer-analyse"
         ],
-        "test": "phpunit"
+        "test": "paratest"
     },
     "config": {
         "sort-packages": true

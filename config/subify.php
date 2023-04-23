@@ -3,10 +3,31 @@
 return [
     'repositories' => [
         'cache' => [
-            'enabled' => false,
+            'benefit' => [
+                'enabled' => true,
+                'store' => null, // set it to `null` to use the default cache store
+                'ttl' => DateInterval::createFromDateString('1 day'),
+            ],
+
+            'benefit_plan' => [
+                'enabled' => true,
+                'store' => null, // set it to `null` to use the default cache store
+                'ttl' => DateInterval::createFromDateString('1 day'),
+            ],
+
+            'benefit_usage' => [
+                'enabled' => true,
+                'store' => null, // set it to `null` to use the default cache store
+                'ttl' => DateInterval::createFromDateString('1 day'),
+            ],
+
+            'subscription' => [
+                'enabled' => true,
+                'store' => null, // set it to `null` to use the default cache store
+                'ttl' => DateInterval::createFromDateString('1 day'),
+            ],
+
             'prefix' => '__subify:',
-            'store' => null, // set it to `null` to use the default cache store
-            'ttl' => DateInterval::createFromDateString('1 day'),
         ],
 
         'eloquent' => [

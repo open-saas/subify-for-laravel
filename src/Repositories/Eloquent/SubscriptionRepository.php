@@ -6,12 +6,12 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Container\Container;
 use OpenSaaS\Subify\Contracts\Database\SubscriptionRepository as DatabaseSubscriptionRepository;
 use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
-use OpenSaaS\Subify\Repositories\Eloquent\Concerns\HasSubscriberIdentifier;
+use OpenSaaS\Subify\Repositories\Eloquent\Concerns\QueriesBySubscriberIdentifier;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 
 class SubscriptionRepository implements DatabaseSubscriptionRepository
 {
-    use HasSubscriberIdentifier;
+    use QueriesBySubscriberIdentifier;
 
     private Subscription $model;
 

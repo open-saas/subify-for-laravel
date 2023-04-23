@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSaaS\Subify\Contracts\Array;
+namespace OpenSaaS\Subify\Contracts\Context;
 
 use OpenSaaS\Subify\Entities\Subscription;
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanRegimeFactory;
 use OpenSaaS\Subify\Entities\PlanRegime as PlanRegimeEntity;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasPeriodicityFields;
 
 /**
  * @property int                        $id
@@ -28,6 +29,7 @@ use OpenSaaS\Subify\Enums\PeriodicityUnit;
 class PlanRegime extends Model
 {
     use HasFactory;
+    use HasPeriodicityFields;
     use SoftDeletes;
 
     protected $casts = [
@@ -58,30 +60,19 @@ class PlanRegime extends Model
         return config('subify.repositories.eloquent.plan_regime.table');
     }
 
+    /**
+     * @internal
+     */
     public function toEntity(): PlanRegimeEntity
     {
-        $periodicity = $this->periodicity
-            ? \DateInterval::createFromDateString($this->periodicity.' '.$this->periodicity_unit->value)
-            : null;
-
-        $grace = $this->grace
-            ? \DateInterval::createFromDateString($this->grace.' '.$this->grace_unit->value)
-            : null;
-
-        $trial = $this->trial
-            ? \DateInterval::createFromDateString($this->trial.' '.$this->trial_unit->value)
-            : null;
-
         return new PlanRegimeEntity(
             $this->id,
             $this->plan_id,
             $this->name,
             $this->price,
-            $periodicity,
-            $grace,
-            $trial,
-            $this->created_at,
-            $this->updated_at,
+            $this->periodicityToDateInterval($this->periodicity_unit, $this->periodicity),
+            $this->periodicityToDateInterval($this->grace_unit, $this->grace),
+            $this->periodicityToDateInterval($this->trial_unit, $this->trial),
         );
     }
 

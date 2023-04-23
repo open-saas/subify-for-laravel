@@ -2,8 +2,12 @@
 
 namespace OpenSaaS\Subify\Entities;
 
+use OpenSaaS\Subify\Entities\Concerns\CalculatesRecurrence;
+
 final class PlanRegime
 {
+    use CalculatesRecurrence;
+
     public function __construct(
         private int $id,
         private int $planId,
@@ -12,8 +16,6 @@ final class PlanRegime
         private ?\DateInterval $periodicity,
         private ?\DateInterval $grace,
         private ?\DateInterval $trial,
-        private \DateTime $createdAt,
-        private \DateTime $updatedAt,
     ) {
     }
 
@@ -52,40 +54,30 @@ final class PlanRegime
         return $this->trial;
     }
 
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function calculateNextExpiration(string|\DateTimeInterface $from = 'now'): ?\DateTimeInterface
+    public function calculateNextExpiration(\DateTimeInterface $from): ?\DateTimeImmutable
     {
         if (empty($this->periodicity)) {
             return null;
         }
 
-        return (new \DateTime($from))->add($this->periodicity);
+        return $this->calculateNextRecurrence(\DateTimeImmutable::createFromInterface($from), $this->periodicity);
     }
 
-    public function calculateNextGraceEnd(string|\DateTimeInterface $from = 'now'): ?\DateTimeInterface
+    public function calculateNextGraceEnd(\DateTimeInterface $from): ?\DateTimeImmutable
     {
         if (empty($this->grace)) {
             return null;
         }
 
-        return (new \DateTime($from))->add($this->grace);
+        return \DateTimeImmutable::createFromInterface($from)->add($this->grace);
     }
 
-    public function calculateNextTrialEnd(string|\DateTimeInterface $from = 'now'): ?\DateTimeInterface
+    public function calculateNextTrialEnd(\DateTimeInterface $from): ?\DateTimeImmutable
     {
         if (empty($this->trial)) {
             return null;
         }
 
-        return (new \DateTime($from))->add($this->trial);
+        return \DateTimeImmutable::createFromInterface($from)->add($this->trial);
     }
 }

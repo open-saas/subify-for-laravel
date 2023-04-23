@@ -8,22 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitUsageFactory;
+use OpenSaaS\Subify\Entities\BenefitUsage as BenefitUsageEntity;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasSubscriberIdentifier;
 
 /**
- * @property int                        $id
- * @property int                        $benefit_id
- * @property int                        $subscriber_id
- * @property string                     $subscriber_type
- * @property float                      $amount
- * @property \Illuminate\Support\Carbon $expired_at
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property \Illuminate\Support\Carbon $deleted_at
+ * @property int                         $id
+ * @property int                         $benefit_id
+ * @property string                      $subscriber_id
+ * @property string                      $subscriber_type
+ * @property float                       $amount
+ * @property ?\Illuminate\Support\Carbon $expired_at
+ * @property \Illuminate\Support\Carbon  $created_at
+ * @property \Illuminate\Support\Carbon  $updated_at
+ * @property \Illuminate\Support\Carbon  $deleted_at
  */
 class BenefitUsage extends Model
 {
     use HasFactory;
+    use HasSubscriberIdentifier;
     use SoftDeletes;
+
+    protected $casts = [
+        'expired_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'benefit_id',
@@ -35,13 +42,16 @@ class BenefitUsage extends Model
 
     public function scopeOnlyExpired(Builder $query): Builder
     {
-        return $query->withoutGlobalScope('expirable')
-            ->where('expired_at', '<=', now());
+        return $query->where('expired_at', '<=', now());
     }
 
-    public function scopeWithExpired(Builder $query): Builder
+    public function scopeWithoutExpired(Builder $query): Builder
     {
-        return $query->withoutGlobalScope('expirable');
+        return $query->where(
+            fn (Builder $query) => $query
+                ->whereNull('expired_at')
+                ->orWhere('expired_at', '>', now())
+        );
     }
 
     public function benefit(): BelongsTo
@@ -54,13 +64,15 @@ class BenefitUsage extends Model
         return config('subify.repositories.eloquent.benefit_usage.table');
     }
 
-    protected static function booted()
+    public function toEntity(): BenefitUsageEntity
     {
-        static::addGlobalScope('expirable', function (Builder $builder) {
-            $builder->where(
-                fn (Builder $query) => $query->whereNull('expired_at')->orWhere('expired_at', '>', now())
-            );
-        });
+        return new BenefitUsageEntity(
+            $this->id,
+            $this->getSubscriberIdentifier(),
+            $this->benefit_id,
+            $this->amount,
+            $this->expired_at?->toDateTimeImmutable(),
+        );
     }
 
     protected static function newFactory(): BenefitUsageFactory

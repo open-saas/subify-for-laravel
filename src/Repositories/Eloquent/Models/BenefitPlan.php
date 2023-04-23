@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use OpenSaaS\Subify\Database\Factories\BenefitPlanFactory;
+use OpenSaaS\Subify\Entities\BenefitPlan as BenefitPlanEntity;
 
 /**
  * @property int                        $id
@@ -43,6 +44,17 @@ class BenefitPlan extends Pivot
     public function getTable(): string
     {
         return config('subify.repositories.eloquent.benefit_plan.table');
+    }
+
+    public function toEntity(): BenefitPlanEntity
+    {
+        return new BenefitPlanEntity(
+            $this->id,
+            $this->benefit_id,
+            $this->plan_id,
+            $this->charges,
+            $this->is_unlimited,
+        );
     }
 
     protected static function newFactory(): BenefitPlanFactory

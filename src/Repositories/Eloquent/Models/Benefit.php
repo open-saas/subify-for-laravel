@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitFactory;
+use OpenSaaS\Subify\Entities\Benefit as BenefitEntity;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasPeriodicityFields;
 
 /**
  * @property int                        $id
@@ -22,6 +24,7 @@ use OpenSaaS\Subify\Enums\PeriodicityUnit;
 class Benefit extends Model
 {
     use HasFactory;
+    use HasPeriodicityFields;
     use SoftDeletes;
 
     protected $casts = [
@@ -39,6 +42,20 @@ class Benefit extends Model
     public function getTable(): string
     {
         return config('subify.repositories.eloquent.benefit.table');
+    }
+
+    /**
+     * @internal
+     */
+    public function toEntity(): BenefitEntity
+    {
+        return new BenefitEntity(
+            $this->id,
+            $this->name,
+            $this->is_consumable,
+            $this->is_quota,
+            $this->periodicityToDateInterval($this->periodicity_unit, $this->periodicity),
+        );
     }
 
     protected static function newFactory(): BenefitFactory

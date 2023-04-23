@@ -9,12 +9,11 @@ final class Subscription
         private string $subscriberIdentifier,
         private int $planId,
         private int $planRegimeId,
-        private ?\DateTime $graceEndedAt,
-        private ?\DateTime $trialEndedAt,
-        private ?\DateTime $renewedAt,
-        private ?\DateTime $expiredAt,
-        private \DateTime $createdAt,
-        private \DateTime $updatedAt,
+        private \DateTimeImmutable $startedAt,
+        private ?\DateTimeImmutable $graceEndedAt,
+        private ?\DateTimeImmutable $trialEndedAt,
+        private ?\DateTimeImmutable $renewedAt,
+        private ?\DateTimeImmutable $expiredAt,
     ) {
     }
 
@@ -38,33 +37,70 @@ final class Subscription
         return $this->planRegimeId;
     }
 
-    public function getGraceEndedAt(): ?\DateTime
+    public function getStartedAt(): \DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function getGraceEndedAt(): ?\DateTimeImmutable
     {
         return $this->graceEndedAt;
     }
 
-    public function getTrialEndedAt(): ?\DateTime
+    public function getTrialEndedAt(): ?\DateTimeImmutable
     {
         return $this->trialEndedAt;
     }
 
-    public function getRenewedAt(): ?\DateTime
+    public function getRenewedAt(): ?\DateTimeImmutable
     {
         return $this->renewedAt;
     }
 
-    public function getExpiredAt(): ?\DateTime
+    public function getExpiredAt(): ?\DateTimeImmutable
     {
         return $this->expiredAt;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function isExpired(): bool
     {
-        return $this->createdAt;
+        if (empty($this->expiredAt)) {
+            return false;
+        }
+
+        return $this->expiredAt->getTimestamp() < time();
     }
 
-    public function getUpdatedAt(): \DateTime
+    public function isNotExpired(): bool
     {
-        return $this->updatedAt;
+        return !$this->isExpired();
+    }
+
+    public function isGrace(): bool
+    {
+        if (empty($this->graceEndedAt)) {
+            return false;
+        }
+
+        return $this->graceEndedAt->getTimestamp() > time();
+    }
+
+    public function isTrial(): bool
+    {
+        if (empty($this->trialEndedAt)) {
+            return false;
+        }
+
+        return $this->trialEndedAt->getTimestamp() > time();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isNotExpired() or $this->isGrace() or $this->isTrial();
+    }
+
+    public function isNotActive(): bool
+    {
+        return !$this->isActive();
     }
 }

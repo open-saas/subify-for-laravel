@@ -21,13 +21,13 @@ class SubscriptionRepository implements CacheSubscriptionRepository
     ) {
         $this->configRepository = $configRepository;
 
-        $cacheStore = $this->configRepository->get('subify.repositories.cache.store');
+        $cacheStore = $this->configRepository->get('subify.repositories.cache.subscription.store');
         $this->cacheRepository = $cacheFactory->store($cacheStore);
     }
 
     public function find(string $subscriberIdentifier): ?Subscription
     {
-        $subscriptionData = $this->cacheRepository->get($this->prefixed($subscriberIdentifier));
+        $subscriptionData = $this->cacheRepository->get($this->prefixed('subscriptions:'.$subscriberIdentifier));
 
         if (empty($subscriptionData)) {
             return null;
@@ -39,15 +39,20 @@ class SubscriptionRepository implements CacheSubscriptionRepository
     public function save(Subscription $subscription): void
     {
         $this->cacheRepository->put(
-            $this->prefixed($subscription->getSubscriberIdentifier()),
+            $this->prefixed('subscriptions:'.$subscription->getSubscriberIdentifier()),
             $this->entityToOptimizedArray($subscription),
-            $this->configRepository->get('subify.repositories.cache.ttl'),
+            $this->configRepository->get('subify.repositories.cache.subscription.ttl'),
         );
+    }
+
+    public function has(string $subscriberIdentifier): bool
+    {
+        return $this->cacheRepository->has($this->prefixed('subscriptions:'.$subscriberIdentifier));
     }
 
     public function delete(string $subscriberIdentifier): void
     {
-        $this->cacheRepository->delete($this->prefixed($subscriberIdentifier));
+        $this->cacheRepository->delete($this->prefixed('subscriptions:'.$subscriberIdentifier));
     }
 
     private function entityToOptimizedArray(Subscription $subscription): array
@@ -57,28 +62,26 @@ class SubscriptionRepository implements CacheSubscriptionRepository
             's' => $subscription->getSubscriberIdentifier(),
             'p' => $subscription->getPlanId(),
             'r' => $subscription->getPlanRegimeId(),
+            'a' => $subscription->getStartedAt(),
             'g' => $subscription->getGraceEndedAt(),
             't' => $subscription->getTrialEndedAt(),
             'w' => $subscription->getRenewedAt(),
             'e' => $subscription->getExpiredAt(),
-            'c' => $subscription->getCreatedAt(),
-            'u' => $subscription->getUpdatedAt(),
         ];
     }
 
     private function optimizedArrayToEntity(array $subscriptionData): Subscription
     {
         return new Subscription(
-            id: $subscriptionData['i'],
-            subscriberIdentifier: $subscriptionData['s'],
-            planId: $subscriptionData['p'],
-            planRegimeId: $subscriptionData['r'],
-            graceEndedAt: $subscriptionData['g'],
-            trialEndedAt: $subscriptionData['t'],
-            renewedAt: $subscriptionData['w'],
-            expiredAt: $subscriptionData['e'],
-            createdAt: $subscriptionData['c'],
-            updatedAt: $subscriptionData['u'],
+            $subscriptionData['i'],
+            $subscriptionData['s'],
+            $subscriptionData['p'],
+            $subscriptionData['r'],
+            $subscriptionData['a'],
+            $subscriptionData['g'],
+            $subscriptionData['t'],
+            $subscriptionData['w'],
+            $subscriptionData['e'],
         );
     }
 }

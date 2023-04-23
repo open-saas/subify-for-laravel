@@ -2,7 +2,7 @@
 
 namespace OpenSaaS\Subify\Repositories\Eloquent\Concerns;
 
-trait HasSubscriberIdentifier
+trait QueriesBySubscriberIdentifier
 {
     private function subscriberIs(string $subscriberIdentifier): array
     {
@@ -12,10 +12,5 @@ trait HasSubscriberIdentifier
             'subscriber_id' => $subscriberId,
             'subscriber_type' => $subscriberType,
         ];
-    }
-
-    private function toSubscriberIdentifier(string $subscriberId, string $subscriberType): string
-    {
-        return $subscriberType.':'.$subscriberId;
     }
 }
