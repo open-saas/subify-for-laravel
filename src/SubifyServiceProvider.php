@@ -32,6 +32,8 @@ class SubifyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/subify.php', 'subify');
+
+        $this->listenForEvents();
     }
 
     public function boot(): void
@@ -50,5 +52,24 @@ class SubifyServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../database/migrations' => $this->app->databasePath('migrations'),
         ], 'subify-migrations');
+    }
+
+    protected function listenForEvents()
+    {
+        $this->app['events']->listen(
+            [
+                \Laravel\Octane\Events\RequestReceived::class,
+                \Laravel\Octane\Events\TaskReceived::class,
+                \Laravel\Octane\Events\TickReceived::class,
+            ],
+            fn () => $this->app[Contracts\SubscriptionManager::class]->flushContext(),
+        );
+
+        $this->app['events']->listen(
+            [
+                \Illuminate\Queue\Events\JobProcessed::class,
+            ],
+            fn () => $this->app[Contracts\SubscriptionManager::class]->flushContext(),
+        );
     }
 }
