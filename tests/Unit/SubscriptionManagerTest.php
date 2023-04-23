@@ -654,7 +654,8 @@ class SubscriptionManagerTest extends TestCase
 
         $this->benefitUsageDecorator
             ->shouldReceive('save')
-            ->withArgs(fn (BenefitUsage $savedBenefitUsage): bool => 1.0 === $savedBenefitUsage->getAmount()
+            ->withArgs(
+                fn (BenefitUsage $savedBenefitUsage): bool => 1.0 === $savedBenefitUsage->getAmount()
                 and $savedBenefitUsage->getExpiredAt()->getTimestamp() === $subscription->getStartedAt()->add($benefit->getPeriodicity())->getTimestamp()
             );
 
