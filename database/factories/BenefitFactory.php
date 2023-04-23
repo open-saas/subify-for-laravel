@@ -3,7 +3,6 @@
 namespace OpenSaaS\Subify\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 
 class BenefitFactory extends Factory

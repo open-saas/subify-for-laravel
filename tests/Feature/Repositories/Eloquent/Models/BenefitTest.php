@@ -4,7 +4,6 @@ namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenSaaS\Subify\Entities\Benefit as BenefitEntity;
-use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use Tests\Feature\TestCase;
 
