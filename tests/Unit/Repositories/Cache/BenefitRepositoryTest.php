@@ -78,7 +78,7 @@ class BenefitRepositoryTest extends TestCase
     public function testAllReturnsBenefit(): void
     {
         $expectedBenefit = BenefitFixture::create([
-            'periodicity' => \DateInterval::createFromDateString('1 month'),
+            'periodicity' => new \DateInterval('P0Y1M0DT0H0M0S'),
         ]);
 
         $benefitData = [
