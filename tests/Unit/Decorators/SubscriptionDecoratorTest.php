@@ -3,9 +3,9 @@
 namespace Tests\Unit\Decorators;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Mockery\MockInterface;
-use OpenSaaS\Subify\Contracts\Array\SubscriptionRepository as ArraySubscriptionRepository;
+use Mockery\LegacyMockInterface;
 use OpenSaaS\Subify\Contracts\Cache\SubscriptionRepository as CacheSubscriptionRepository;
+use OpenSaaS\Subify\Contracts\Context\SubscriptionRepository as ContextSubscriptionRepository;
 use OpenSaaS\Subify\Contracts\Database\SubscriptionRepository as DatabaseSubscriptionRepository;
 use OpenSaaS\Subify\Decorators\SubscriptionDecorator;
 use PHPUnit\Framework\TestCase;
@@ -18,11 +18,11 @@ class SubscriptionDecoratorTest extends TestCase
 {
     private ConfigRepository $configRepository;
 
-    private MockInterface|ArraySubscriptionRepository $arraySubscriptionRepository;
+    private LegacyMockInterface|ContextSubscriptionRepository $contextSubscriptionRepository;
 
-    private MockInterface|CacheSubscriptionRepository $cacheSubscriptionRepository;
+    private LegacyMockInterface|CacheSubscriptionRepository $cacheSubscriptionRepository;
 
-    private MockInterface|DatabaseSubscriptionRepository $databaseSubscriptionRepository;
+    private LegacyMockInterface|DatabaseSubscriptionRepository $databaseSubscriptionRepository;
 
     private SubscriptionDecorator $subscriptionDecorator;
 
@@ -31,7 +31,7 @@ class SubscriptionDecoratorTest extends TestCase
         parent::setUp();
 
         $this->configRepository = \Mockery::mock(ConfigRepository::class);
-        $this->arraySubscriptionRepository = \Mockery::mock(ArraySubscriptionRepository::class);
+        $this->contextSubscriptionRepository = \Mockery::mock(ContextSubscriptionRepository::class);
         $this->cacheSubscriptionRepository = \Mockery::mock(CacheSubscriptionRepository::class);
         $this->databaseSubscriptionRepository = \Mockery::mock(DatabaseSubscriptionRepository::class);
 
@@ -39,7 +39,7 @@ class SubscriptionDecoratorTest extends TestCase
             $this->configRepository,
             $this->databaseSubscriptionRepository,
             $this->cacheSubscriptionRepository,
-            $this->arraySubscriptionRepository,
+            $this->contextSubscriptionRepository,
         );
     }
 
@@ -50,15 +50,24 @@ class SubscriptionDecoratorTest extends TestCase
         \Mockery::close();
     }
 
-    public function testFindUsesArrayRepository(): void
+    public function testFindReturnsDirectlyFromArrayWhenItHasTheSubscription(): void
     {
         $subscription = SubscriptionFixture::create();
 
-        $this->arraySubscriptionRepository
+        $this->contextSubscriptionRepository
+            ->shouldReceive('has')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturnTrue();
+
+        $this->contextSubscriptionRepository
             ->shouldReceive('find')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
             ->andReturn($subscription);
+
+        $this->cacheSubscriptionRepository
+            ->shouldNotReceive('has');
 
         $this->cacheSubscriptionRepository
             ->shouldNotReceive('find');
@@ -72,15 +81,27 @@ class SubscriptionDecoratorTest extends TestCase
         );
     }
 
-    public function testFindUsesCacheRepositoryWhenEnabled(): void
+    public function testFindGetsFromCacheWhenItIsEnabled(): void
     {
         $subscription = SubscriptionFixture::create();
 
-        $this->arraySubscriptionRepository
-            ->shouldReceive('find')
+        $this->contextSubscriptionRepository
+            ->shouldReceive('has')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull();
+            ->andReturnFalse();
+
+        $this->configRepository
+            ->shouldReceive('get')
+            ->with('subify.repositories.cache.subscription.enabled')
+            ->once()
+            ->andReturnTrue();
+
+        $this->cacheSubscriptionRepository
+            ->shouldReceive('has')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturnTrue();
 
         $this->cacheSubscriptionRepository
             ->shouldReceive('find')
@@ -88,35 +109,47 @@ class SubscriptionDecoratorTest extends TestCase
             ->once()
             ->andReturn($subscription);
 
-        $this->arraySubscriptionRepository
+        $this->contextSubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
             ->once();
+
+        $this->contextSubscriptionRepository
+            ->shouldReceive('find')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturn($subscription);
 
         $this->databaseSubscriptionRepository
             ->shouldNotReceive('findActive');
 
-        $this->configRepository
-            ->shouldReceive('get')
-            ->with('subify.repositories.cache.subscription.enabled')
-            ->once()
-            ->andReturnTrue();
-
         $this->assertEquals(
             $subscription,
             $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
         );
     }
 
-    public function testFindUsesDatabaseRepositoryWhenCacheIsDisabled(): void
+    public function testFindGetsFromDatabaseAndSavesInCacheWhenItIsEnabled(): void
     {
         $subscription = SubscriptionFixture::create();
 
-        $this->arraySubscriptionRepository
-            ->shouldReceive('find')
+        $this->contextSubscriptionRepository
+            ->shouldReceive('has')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull();
+            ->andReturnFalse();
+
+        $this->configRepository
+            ->shouldReceive('get')
+            ->with('subify.repositories.cache.subscription.enabled')
+            ->once()
+            ->andReturnTrue();
+
+        $this->cacheSubscriptionRepository
+            ->shouldReceive('has')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturnFalse();
 
         $this->cacheSubscriptionRepository
             ->shouldNotReceive('find');
@@ -127,13 +160,37 @@ class SubscriptionDecoratorTest extends TestCase
             ->once()
             ->andReturn($subscription);
 
-        $this->arraySubscriptionRepository
+        $this->contextSubscriptionRepository
             ->shouldReceive('save')
             ->with($subscription)
             ->once();
 
         $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save');
+            ->shouldReceive('save')
+            ->with($subscription)
+            ->once();
+
+        $this->contextSubscriptionRepository
+            ->shouldReceive('find')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturn($subscription);
+
+        $this->assertEquals(
+            $subscription,
+            $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
+        );
+    }
+
+    public function testFindGetsFromDatabaseWhenCacheIsDisabled(): void
+    {
+        $subscription = SubscriptionFixture::create();
+
+        $this->contextSubscriptionRepository
+            ->shouldReceive('has')
+            ->with($subscription->getSubscriberIdentifier())
+            ->once()
+            ->andReturnFalse();
 
         $this->configRepository
             ->shouldReceive('get')
@@ -141,104 +198,8 @@ class SubscriptionDecoratorTest extends TestCase
             ->once()
             ->andReturnFalse();
 
-        $this->assertEquals(
-            $subscription,
-            $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
-        );
-    }
-
-    public function testFindSavesResultToCacheWhenItIsEnabled(): void
-    {
-        $subscription = SubscriptionFixture::create();
-
-        $this->arraySubscriptionRepository
-            ->shouldReceive('find')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
-
         $this->cacheSubscriptionRepository
-            ->shouldReceive('find')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
-
-        $this->databaseSubscriptionRepository
-            ->shouldReceive('findActive')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturn($subscription);
-
-        $this->arraySubscriptionRepository
-            ->shouldReceive('save')
-            ->with($subscription)
-            ->once();
-
-        $this->cacheSubscriptionRepository
-            ->shouldReceive('save')
-            ->with($subscription)
-            ->once();
-
-        $this->configRepository
-            ->shouldReceive('get')
-            ->with('subify.repositories.cache.subscription.enabled')
-            ->once()
-            ->andReturnTrue();
-
-        $this->assertEquals(
-            $subscription,
-            $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
-        );
-    }
-
-    public function testFindReturnsNullWhenCacheIsEnabledButThereIsNoResult(): void
-    {
-        $subscription = SubscriptionFixture::create();
-
-        $this->arraySubscriptionRepository
-            ->shouldReceive('find')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
-
-        $this->cacheSubscriptionRepository
-            ->shouldReceive('find')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
-
-        $this->databaseSubscriptionRepository
-            ->shouldReceive('findActive')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
-
-        $this->arraySubscriptionRepository
-            ->shouldNotReceive('save');
-
-        $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save');
-
-        $this->configRepository
-            ->shouldReceive('get')
-            ->with('subify.repositories.cache.subscription.enabled')
-            ->once()
-            ->andReturnTrue();
-
-        $this->assertNull(
-            $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
-        );
-    }
-
-    public function testFindReturnsNullWhenCacheIsDisabledAndThereIsNoResult(): void
-    {
-        $subscription = SubscriptionFixture::create();
-
-        $this->arraySubscriptionRepository
-            ->shouldReceive('find')
-            ->with($subscription->getSubscriberIdentifier())
-            ->once()
-            ->andReturnNull();
+            ->shouldNotReceive('has');
 
         $this->cacheSubscriptionRepository
             ->shouldNotReceive('find');
@@ -247,32 +208,32 @@ class SubscriptionDecoratorTest extends TestCase
             ->shouldReceive('findActive')
             ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnNull();
+            ->andReturn($subscription);
 
-        $this->arraySubscriptionRepository
-            ->shouldNotReceive('save');
+        $this->contextSubscriptionRepository
+            ->shouldReceive('save')
+            ->with($subscription)
+            ->once();
 
-        $this->cacheSubscriptionRepository
-            ->shouldNotReceive('save');
-
-        $this->configRepository
-            ->shouldReceive('get')
-            ->with('subify.repositories.cache.subscription.enabled')
+        $this->contextSubscriptionRepository
+            ->shouldReceive('find')
+            ->with($subscription->getSubscriberIdentifier())
             ->once()
-            ->andReturnFalse();
+            ->andReturn($subscription);
 
-        $this->assertNull(
+        $this->assertEquals(
+            $subscription,
             $this->subscriptionDecorator->find($subscription->getSubscriberIdentifier())
         );
     }
 
-    public function testFlushCallsArrayRepository(): void
+    public function testFlushContextCallsContextRepository(): void
     {
-        $this->arraySubscriptionRepository
+        $this->contextSubscriptionRepository
             ->shouldReceive('flush')
             ->once();
 
-        $this->subscriptionDecorator->flush();
+        $this->subscriptionDecorator->flushContext();
 
         $this->assertTrue(true);
     }

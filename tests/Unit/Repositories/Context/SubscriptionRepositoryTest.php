@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Repositories\Array;
 
-use OpenSaaS\Subify\Repositories\Array\SubscriptionRepository;
+use OpenSaaS\Subify\Repositories\Context\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\SubscriptionFixture;
 
@@ -58,7 +58,7 @@ class SubscriptionRepositoryTest extends TestCase
         $this->assertEquals([$subscriberIdentifier => $expectedSubscription], $actualSubscription);
     }
 
-    public function testFlushClearsArray(): void
+    public function testFlushContextClearsArray(): void
     {
         $this->subscriptionsProperty->setValue($this->repository, [SubscriptionFixture::create()->getSubscriberIdentifier() => SubscriptionFixture::create()]);
 
@@ -67,5 +67,26 @@ class SubscriptionRepositoryTest extends TestCase
         $actualSubscription = $this->subscriptionsProperty->getValue($this->repository);
 
         $this->assertEquals([], $actualSubscription);
+    }
+
+    public function testHasReturnsTrue(): void
+    {
+        $expectedSubscription = SubscriptionFixture::create();
+        $subscriberIdentifier = $expectedSubscription->getSubscriberIdentifier();
+
+        $this->subscriptionsProperty->setValue($this->repository, [$subscriberIdentifier => $expectedSubscription]);
+
+        $actualSubscription = $this->repository->has($subscriberIdentifier);
+
+        $this->assertTrue($actualSubscription);
+    }
+
+    public function testHasReturnsFalse(): void
+    {
+        $this->subscriptionsProperty->setValue($this->repository, []);
+
+        $actualSubscription = $this->repository->has('non-existing-subscriber-identifier');
+
+        $this->assertFalse($actualSubscription);
     }
 }

@@ -60,42 +60,5 @@ class PlanTest extends TestCase
 
         $this->assertEquals($plan->id, $planEntity->getId());
         $this->assertEquals($plan->name, $planEntity->getName());
-        $this->assertEquals([], $planEntity->getRegimes());
-        $this->assertEquals($plan->created_at, $planEntity->getCreatedAt());
-        $this->assertEquals($plan->updated_at, $planEntity->getUpdatedAt());
-    }
-
-    public function testItAddsRegimesToEntityIfLoaded(): void
-    {
-        $plan = Plan::factory()->create();
-
-        $regimes = PlanRegime::factory()
-            ->for($plan)
-            ->count(3)
-            ->create();
-
-        $expectedRegimes = $regimes->map->toEntity()->toArray();
-
-        $plan->load('regimes');
-
-        $planEntity = $plan->toEntity();
-
-        $this->assertEquals($expectedRegimes, $planEntity->getRegimes());
-    }
-
-    public function testItAddsPassedRegimesToEntityIfRelationNotLoaded(): void
-    {
-        $plan = Plan::factory()->create();
-
-        $regimes = PlanRegime::factory()
-            ->for($plan)
-            ->count(3)
-            ->create();
-
-        $expectedRegimes = $regimes->map->toEntity()->toArray();
-
-        $planEntity = $plan->toEntity($expectedRegimes);
-
-        $this->assertEquals($expectedRegimes, $planEntity->getRegimes());
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenSaaS\Subify\Entities\Benefit as BenefitEntity;
 use OpenSaaS\Subify\Enums\PeriodicityUnit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use Tests\Feature\TestCase;
@@ -70,5 +71,37 @@ class BenefitTest extends TestCase
             'month' => [PeriodicityUnit::Month],
             'year' => [PeriodicityUnit::Year],
         ];
+    }
+
+    public function testItHasAMethodToConvertToEntity(): void
+    {
+        /** @var Benefit $benefit */
+        $benefit = Benefit::factory()->create();
+        $benefitEntity = $benefit->toEntity();
+
+        $expectedPeriodicity = \DateInterval::createFromDateString(
+            "{$benefit->periodicity} {$benefit->periodicity_unit->value}"
+        );
+
+        $this->assertInstanceOf(BenefitEntity::class, $benefitEntity);
+        $this->assertEquals($benefit->id, $benefitEntity->getId());
+        $this->assertEquals($benefit->name, $benefitEntity->getName());
+        $this->assertEquals($benefit->is_consumable, $benefitEntity->isConsumable());
+        $this->assertEquals($benefit->is_quota, $benefitEntity->isQuota());
+        $this->assertEquals($expectedPeriodicity, $benefitEntity->getPeriodicity());
+    }
+
+    public function testItHandlesNullPeriodicityWhenConvertingToEntity(): void
+    {
+        /** @var Benefit $benefit */
+        $benefit = Benefit::factory()->create(['periodicity' => null]);
+        $benefitEntity = $benefit->toEntity();
+
+        $this->assertInstanceOf(BenefitEntity::class, $benefitEntity);
+        $this->assertEquals($benefit->id, $benefitEntity->getId());
+        $this->assertEquals($benefit->name, $benefitEntity->getName());
+        $this->assertEquals($benefit->is_consumable, $benefitEntity->isConsumable());
+        $this->assertEquals($benefit->is_quota, $benefitEntity->isQuota());
+        $this->assertNull($benefitEntity->getPeriodicity());
     }
 }

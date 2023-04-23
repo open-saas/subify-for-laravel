@@ -10,20 +10,6 @@ use Tests\Fixtures\PlanRegimeFixture;
  */
 class PlanRegimeTest extends TestCase
 {
-    public function testItCalculatesNextExpiration(): void
-    {
-        $periodicity = \DateInterval::createFromDateString('1 month');
-
-        $regime = PlanRegimeFixture::create([
-            'periodicity' => $periodicity,
-        ]);
-
-        $this->assertEquals(
-            (new \DateTimeImmutable())->add($periodicity)->getTimestamp(),
-            $regime->calculateNextExpiration()->getTimestamp(),
-        );
-    }
-
     public function testItCalculatesNextExpirationFromACertainDate(): void
     {
         $periodicity = \DateInterval::createFromDateString('1 month');
@@ -33,8 +19,8 @@ class PlanRegimeTest extends TestCase
         ]);
 
         $this->assertEquals(
-            (new \DateTimeImmutable('2021-01-01'))->add($periodicity)->getTimestamp(),
-            $regime->calculateNextExpiration('2021-01-01')->getTimestamp(),
+            \DateTimeImmutable::createFromInterface(new \DateTime())->add($periodicity)->getTimestamp(),
+            $regime->calculateNextExpiration(new \DateTime())->getTimestamp(),
         );
     }
 
@@ -44,21 +30,7 @@ class PlanRegimeTest extends TestCase
             'periodicity' => null,
         ]);
 
-        $this->assertNull($regime->calculateNextExpiration());
-    }
-
-    public function testItCalculatesNextGraceEnd(): void
-    {
-        $grace = \DateInterval::createFromDateString('1 month');
-
-        $regime = PlanRegimeFixture::create([
-            'grace' => $grace,
-        ]);
-
-        $this->assertEquals(
-            (new \DateTimeImmutable())->add($grace)->getTimestamp(),
-            $regime->calculateNextGraceEnd()->getTimestamp(),
-        );
+        $this->assertNull($regime->calculateNextExpiration(new \DateTime()));
     }
 
     public function testItCalculatesNextGraceEndFromACertainDate(): void
@@ -70,8 +42,8 @@ class PlanRegimeTest extends TestCase
         ]);
 
         $this->assertEquals(
-            (new \DateTimeImmutable('2021-01-01'))->add($grace)->getTimestamp(),
-            $regime->calculateNextGraceEnd('2021-01-01')->getTimestamp(),
+            \DateTimeImmutable::createFromInterface(new \DateTime())->add($grace)->getTimestamp(),
+            $regime->calculateNextGraceEnd(new \DateTime())->getTimestamp(),
         );
     }
 
@@ -81,21 +53,7 @@ class PlanRegimeTest extends TestCase
             'grace' => null,
         ]);
 
-        $this->assertNull($regime->calculateNextGraceEnd());
-    }
-
-    public function testItCalculatesNextTrialEnd(): void
-    {
-        $trial = \DateInterval::createFromDateString('1 month');
-
-        $regime = PlanRegimeFixture::create([
-            'trial' => $trial,
-        ]);
-
-        $this->assertEquals(
-            (new \DateTimeImmutable())->add($trial)->getTimestamp(),
-            $regime->calculateNextTrialEnd()->getTimestamp(),
-        );
+        $this->assertNull($regime->calculateNextGraceEnd(new \DateTime()));
     }
 
     public function testItCalculatesNextTrialEndFromACertainDate(): void
@@ -107,8 +65,8 @@ class PlanRegimeTest extends TestCase
         ]);
 
         $this->assertEquals(
-            (new \DateTimeImmutable('2021-01-01'))->add($trial)->getTimestamp(),
-            $regime->calculateNextTrialEnd('2021-01-01')->getTimestamp(),
+            \DateTimeImmutable::createFromInterface(new \DateTime())->add($trial)->getTimestamp(),
+            $regime->calculateNextTrialEnd(new \DateTime())->getTimestamp(),
         );
     }
 
@@ -118,6 +76,6 @@ class PlanRegimeTest extends TestCase
             'trial' => null,
         ]);
 
-        $this->assertNull($regime->calculateNextTrialEnd());
+        $this->assertNull($regime->calculateNextTrialEnd(new \DateTime()));
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenSaaS\Subify\Entities\BenefitUsage as BenefitUsageEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\BenefitUsage;
 use Tests\Feature\TestCase;
@@ -60,7 +61,7 @@ class BenefitUsageTest extends TestCase
         $this->assertEquals($benefit->id, $benefitUsage->benefit->id);
     }
 
-    public function testItHasAGlobalScopeToOnlyReturnNotExpired(): void
+    public function testItHasAScopeToOnlyReturnNotExpired(): void
     {
         $benefit = Benefit::factory()->create();
 
@@ -82,9 +83,9 @@ class BenefitUsageTest extends TestCase
                 'expired_at' => null,
             ]);
 
-        $this->assertEmpty(BenefitUsage::find($expiredBenefitUsage->id));
-        $this->assertNotEmpty(BenefitUsage::find($notExpiredBenefitUsage->id));
-        $this->assertNotEmpty(BenefitUsage::find($benefitUsageWithoutExpiredAt->id));
+        $this->assertEmpty(BenefitUsage::withoutExpired()->find($expiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::withoutExpired()->find($notExpiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::withoutExpired()->find($benefitUsageWithoutExpiredAt->id));
     }
 
     public function testItHasAScopeToOnlyReturnExpired(): void
@@ -114,7 +115,7 @@ class BenefitUsageTest extends TestCase
         $this->assertEmpty(BenefitUsage::onlyExpired()->find($benefitUsageWithoutExpiredAt->id));
     }
 
-    public function testItHasAScopeToReturnWithExpired(): void
+    public function testItByDefaultReturnsExpired(): void
     {
         $benefit = Benefit::factory()->create();
 
@@ -136,8 +137,24 @@ class BenefitUsageTest extends TestCase
                 'expired_at' => null,
             ]);
 
-        $this->assertNotEmpty(BenefitUsage::withExpired()->find($expiredBenefitUsage->id));
-        $this->assertNotEmpty(BenefitUsage::withExpired()->find($notExpiredBenefitUsage->id));
-        $this->assertNotEmpty(BenefitUsage::withExpired()->find($benefitUsageWithoutExpiredAt->id));
+        $this->assertNotEmpty(BenefitUsage::find($expiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::find($notExpiredBenefitUsage->id));
+        $this->assertNotEmpty(BenefitUsage::find($benefitUsageWithoutExpiredAt->id));
+    }
+
+    public function testItHasAMethodToConvertToEntity(): void
+    {
+        /** @var BenefitUsage $benefitUsage */
+        $benefitUsage = BenefitUsage::factory()->create();
+        $benefitUsageEntity = $benefitUsage->toEntity();
+
+        $expectedSubscriberIdentifier = $benefitUsage->subscriber_type.':'.$benefitUsage->subscriber_id;
+
+        $this->assertInstanceOf(BenefitUsageEntity::class, $benefitUsageEntity);
+        $this->assertEquals($benefitUsage->id, $benefitUsageEntity->getId());
+        $this->assertEquals($expectedSubscriberIdentifier, $benefitUsageEntity->getSubscriberIdentifier());
+        $this->assertEquals($benefitUsage->benefit_id, $benefitUsageEntity->getBenefitId());
+        $this->assertEquals($benefitUsage->amount, $benefitUsageEntity->getAmount());
+        $this->assertEquals($benefitUsage->expired_at, $benefitUsageEntity->getExpiredAt());
     }
 }

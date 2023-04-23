@@ -13,12 +13,11 @@ class SubscriptionFixture
             'subscriberIdentifier' => fake()->uuid(),
             'planId' => fake()->numberBetween(1, 100),
             'planRegimeId' => fake()->numberBetween(1, 100),
-            'graceEndedAt' => fake()->dateTime(),
-            'trialEndedAt' => fake()->dateTime(),
-            'renewedAt' => fake()->dateTime(),
-            'expiredAt' => fake()->dateTime(),
-            'createdAt' => fake()->dateTime(),
-            'updatedAt' => fake()->dateTime(),
+            'startedAt' => \DateTimeImmutable::createFromInterface(fake()->dateTime()),
+            'graceEndedAt' => \DateTimeImmutable::createFromInterface(fake()->dateTime()),
+            'trialEndedAt' => \DateTimeImmutable::createFromInterface(fake()->dateTime()),
+            'renewedAt' => \DateTimeImmutable::createFromInterface(fake()->dateTime()),
+            'expiredAt' => \DateTimeImmutable::createFromInterface(fake()->dateTime()),
         ], $attributes));
     }
 }

@@ -167,8 +167,6 @@ class PlanRegimeTest extends TestCase
         $this->assertEquals($expectedPeriodicity, $entity->getPeriodicity());
         $this->assertEquals($expectedGrace, $entity->getGrace());
         $this->assertEquals($expectedTrial, $entity->getTrial());
-        $this->assertEquals($planRegime->created_at, $entity->getCreatedAt());
-        $this->assertEquals($planRegime->updated_at, $entity->getUpdatedAt());
     }
 
     public function testItPassesNullPeriodicityGraceAndTrialToEntity(): void

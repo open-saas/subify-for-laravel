@@ -16,8 +16,6 @@ class PlanRegimeFixture
             'periodicity' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
             'grace' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
             'trial' => \DateInterval::createFromDateString(fake()->randomElement(['1 month', '1 year'])),
-            'createdAt' => fake()->dateTime(),
-            'updatedAt' => fake()->dateTime(),
         ], $attributes));
     }
 }

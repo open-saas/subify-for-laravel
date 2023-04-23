@@ -5,7 +5,7 @@ namespace Tests\Unit\Repositories\Cache;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Mockery\MockInterface;
+use Mockery\LegacyMockInterface;
 use OpenSaaS\Subify\Repositories\Cache\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\SubscriptionFixture;
@@ -15,9 +15,9 @@ use Tests\Fixtures\SubscriptionFixture;
  */
 class SubscriptionRepositoryTest extends TestCase
 {
-    private MockInterface|CacheRepository $cacheRepository;
+    private LegacyMockInterface|CacheRepository $cacheRepository;
 
-    private MockInterface|ConfigRepository $configRepository;
+    private LegacyMockInterface|ConfigRepository $configRepository;
 
     private SubscriptionRepository $repository;
 
@@ -31,7 +31,7 @@ class SubscriptionRepositoryTest extends TestCase
 
         $this->configRepository
             ->shouldReceive('get')
-            ->with('subify.repositories.cache.store')
+            ->with('subify.repositories.cache.subscription.store')
             ->andReturn('cache-store');
 
         $cacheFactory
@@ -61,7 +61,7 @@ class SubscriptionRepositoryTest extends TestCase
         $configRepository
             ->shouldReceive('get')
             ->once()
-            ->with('subify.repositories.cache.store')
+            ->with('subify.repositories.cache.subscription.store')
             ->andReturn('cache-store');
 
         $cacheFactory
@@ -88,18 +88,17 @@ class SubscriptionRepositoryTest extends TestCase
         $this->cacheRepository
             ->shouldReceive('get')
             ->once()
-            ->with('prefix:subscriber-identifier')
+            ->with('prefix:subscriptions:subscriber-identifier')
             ->andReturn([
                 'i' => $expectedSubscription->getId(),
                 's' => $expectedSubscription->getSubscriberIdentifier(),
                 'p' => $expectedSubscription->getPlanId(),
                 'r' => $expectedSubscription->getPlanRegimeId(),
+                'a' => $expectedSubscription->getStartedAt(),
                 'g' => $expectedSubscription->getGraceEndedAt(),
                 't' => $expectedSubscription->getTrialEndedAt(),
                 'w' => $expectedSubscription->getRenewedAt(),
                 'e' => $expectedSubscription->getExpiredAt(),
-                'c' => $expectedSubscription->getCreatedAt(),
-                'u' => $expectedSubscription->getUpdatedAt(),
             ]);
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
@@ -118,7 +117,7 @@ class SubscriptionRepositoryTest extends TestCase
         $this->cacheRepository
             ->shouldReceive('get')
             ->once()
-            ->with('prefix:subscriber-identifier')
+            ->with('prefix:subscriptions:subscriber-identifier')
             ->andReturnNull();
 
         $actualSubscription = $this->repository->find('subscriber-identifier');
@@ -129,7 +128,7 @@ class SubscriptionRepositoryTest extends TestCase
     public function testSaveCallsPutOnCacheRepository(): void
     {
         $subscription = SubscriptionFixture::create();
-        $expectedSubscriberIdentifier = 'prefix:'.$subscription->getSubscriberIdentifier();
+        $expectedSubscriberIdentifier = 'prefix:subscriptions:'.$subscription->getSubscriberIdentifier();
 
         $this->configRepository
             ->shouldReceive('get')
@@ -140,7 +139,7 @@ class SubscriptionRepositoryTest extends TestCase
         $this->configRepository
             ->shouldReceive('get')
             ->once()
-            ->with('subify.repositories.cache.ttl')
+            ->with('subify.repositories.cache.subscription.ttl')
             ->andReturn(60);
 
         $this->cacheRepository
@@ -151,12 +150,11 @@ class SubscriptionRepositoryTest extends TestCase
                 's' => $subscription->getSubscriberIdentifier(),
                 'p' => $subscription->getPlanId(),
                 'r' => $subscription->getPlanRegimeId(),
+                'a' => $subscription->getStartedAt(),
                 'g' => $subscription->getGraceEndedAt(),
                 't' => $subscription->getTrialEndedAt(),
                 'w' => $subscription->getRenewedAt(),
                 'e' => $subscription->getExpiredAt(),
-                'c' => $subscription->getCreatedAt(),
-                'u' => $subscription->getUpdatedAt(),
             ], 60);
 
         $this->repository->save($subscription);
@@ -167,7 +165,7 @@ class SubscriptionRepositoryTest extends TestCase
     public function testDeleteCallsForgetOnCacheRepository(): void
     {
         $subscription = SubscriptionFixture::create();
-        $expectedSubscriberIdentifier = 'prefix:'.$subscription->getSubscriberIdentifier();
+        $expectedSubscriberIdentifier = 'prefix:subscriptions:'.$subscription->getSubscriberIdentifier();
 
         $this->configRepository
             ->shouldReceive('get')
@@ -183,5 +181,39 @@ class SubscriptionRepositoryTest extends TestCase
         $this->repository->delete($subscription->getSubscriberIdentifier());
 
         $this->assertTrue(true);
+    }
+
+    public function testHasReturnsTrueWhenSubscriptionFound(): void
+    {
+        $this->configRepository
+            ->shouldReceive('get')
+            ->once()
+            ->with('subify.repositories.cache.prefix')
+            ->andReturn('prefix:');
+
+        $this->cacheRepository
+            ->shouldReceive('has')
+            ->once()
+            ->with('prefix:subscriptions:subscriber-identifier')
+            ->andReturnTrue();
+
+        $this->assertTrue($this->repository->has('subscriber-identifier'));
+    }
+
+    public function testHasReturnsFalseWhenSubscriptionNotFound(): void
+    {
+        $this->configRepository
+            ->shouldReceive('get')
+            ->once()
+            ->with('subify.repositories.cache.prefix')
+            ->andReturn('prefix:');
+
+        $this->cacheRepository
+            ->shouldReceive('has')
+            ->once()
+            ->with('prefix:subscriptions:subscriber-identifier')
+            ->andReturnFalse();
+
+        $this->assertFalse($this->repository->has('subscriber-identifier'));
     }
 }

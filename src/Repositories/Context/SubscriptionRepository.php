@@ -15,6 +15,11 @@ class SubscriptionRepository implements ArraySubscriptionRepository
         return $this->subscriptionsByIdentifier[$subscriberIdentifier] ?? null;
     }
 
+    public function has(string $subscriberIdentifier): bool
+    {
+        return isset($this->subscriptionsByIdentifier[$subscriberIdentifier]);
+    }
+
     public function save(Subscription $subscription): void
     {
         $this->subscriptionsByIdentifier[$subscription->getSubscriberIdentifier()] = $subscription;

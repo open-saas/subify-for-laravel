@@ -423,7 +423,7 @@ class SubscriptionTest extends TestCase
         $subscription = Subscription::factory()->create();
         $subscriptionEntity = $subscription->toEntity();
 
-        $expectedSubscriberIdentifier = $subscription->subscriber_id.':'.$subscription->subscriber_type;
+        $expectedSubscriberIdentifier = $subscription->subscriber_type.':'.$subscription->subscriber_id;
 
         $this->assertInstanceOf(SubscriptionEntity::class, $subscriptionEntity);
         $this->assertEquals($subscription->id, $subscriptionEntity->getId());
@@ -434,7 +434,5 @@ class SubscriptionTest extends TestCase
         $this->assertEquals($subscription->trial_ended_at, $subscriptionEntity->getTrialEndedAt());
         $this->assertEquals($subscription->renewed_at, $subscriptionEntity->getRenewedAt());
         $this->assertEquals($subscription->expired_at, $subscriptionEntity->getExpiredAt());
-        $this->assertEquals($subscription->created_at, $subscriptionEntity->getCreatedAt());
-        $this->assertEquals($subscription->updated_at, $subscriptionEntity->getUpdatedAt());
     }
 }

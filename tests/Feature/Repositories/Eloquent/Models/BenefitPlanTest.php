@@ -3,6 +3,7 @@
 namespace Tests\Feature\Repositories\Eloquent\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenSaaS\Subify\Entities\BenefitPlan as BenefitPlanEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\BenefitPlan;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Plan;
@@ -75,5 +76,19 @@ class BenefitPlanTest extends TestCase
         ]);
 
         $this->assertEquals($plan->id, $benefitPlan->plan->id);
+    }
+
+    public function testItHasAMethodToConvertToEntity(): void
+    {
+        /** @var BenefitPlan $benefitPlan */
+        $benefitPlan = BenefitPlan::factory()->create();
+        $benefitPlanEntity = $benefitPlan->toEntity();
+
+        $this->assertInstanceOf(BenefitPlanEntity::class, $benefitPlanEntity);
+        $this->assertEquals($benefitPlan->id, $benefitPlanEntity->getId());
+        $this->assertEquals($benefitPlan->benefit_id, $benefitPlanEntity->getBenefitId());
+        $this->assertEquals($benefitPlan->plan_id, $benefitPlanEntity->getPlanId());
+        $this->assertEquals($benefitPlan->charges, $benefitPlanEntity->getCharges());
+        $this->assertEquals($benefitPlan->is_unlimited, $benefitPlanEntity->isUnlimited());
     }
 }
