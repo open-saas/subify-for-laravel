@@ -16,7 +16,6 @@ return new class() extends Migration {
             $table->timestamp('renewed_at')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->timestamp('started_at');
-            $table->softDeletes();
             $table->timestamps();
             $table->foreignId('plan_id')->constrained(config('subify.repositories.eloquent.plan.table'));
             $table->foreignId('plan_regime_id')->constrained(config('subify.repositories.eloquent.plan_regime.table'));

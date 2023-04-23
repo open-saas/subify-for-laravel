@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\SubscriptionFactory;
 use OpenSaaS\Subify\Entities\Subscription as SubscriptionEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasSubscriberIdentifier;
@@ -30,7 +29,6 @@ class Subscription extends Model
 {
     use HasFactory;
     use HasSubscriberIdentifier;
-    use SoftDeletes;
 
     protected $casts = [
         'grace_ended_at' => 'datetime',

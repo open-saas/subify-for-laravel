@@ -10,7 +10,6 @@ return new class() extends Migration {
         Schema::create(config('subify.repositories.eloquent.plan.table'), function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

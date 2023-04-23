@@ -47,13 +47,15 @@ class SubscriptionTest extends TestCase
         ]);
     }
 
-    public function testItSoftDeletes(): void
+    public function testItDoesNotSoftDeletes(): void
     {
         $subscription = Subscription::factory()->create();
 
         $subscription->delete();
 
-        $this->assertSoftDeleted($subscription);
+        $this->assertDatabaseMissing('subscriptions', [
+            'id' => $subscription->id,
+        ]);
     }
 
     public function testItBelongsToAPlan(): void

@@ -32,13 +32,15 @@ class BenefitTest extends TestCase
         ]);
     }
 
-    public function testItSoftDeletes(): void
+    public function testItDoesNotSoftDeletes(): void
     {
         $benefit = Benefit::factory()->create();
 
         $benefit->delete();
 
-        $this->assertSoftDeleted($benefit);
+        $this->assertDatabaseMissing('benefits', [
+            'id' => $benefit->id,
+        ]);
     }
 
     public function testItHasAMethodToConvertToEntity(): void

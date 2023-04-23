@@ -13,7 +13,6 @@ return new class() extends Migration {
             $table->boolean('is_consumable')->default(false);
             $table->boolean('is_quota')->default(false);
             $table->string('periodicity')->nullable();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,7 +15,6 @@ return new class() extends Migration {
             $table->string('periodicity')->nullable();
             $table->string('grace')->nullable();
             $table->string('trial')->nullable();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

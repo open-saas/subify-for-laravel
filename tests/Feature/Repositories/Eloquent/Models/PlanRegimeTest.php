@@ -40,13 +40,15 @@ class PlanRegimeTest extends TestCase
         ]);
     }
 
-    public function testItSoftDeletes(): void
+    public function testItDoesNotSoftDeletes(): void
     {
         $planRegime = PlanRegime::factory()->create();
 
         $planRegime->delete();
 
-        $this->assertSoftDeleted($planRegime);
+        $this->assertDatabaseMissing('plan_regimes', [
+            'id' => $planRegime->id,
+        ]);
     }
 
     public function testItBelongsToAPlan(): void

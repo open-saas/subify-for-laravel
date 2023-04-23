@@ -4,7 +4,6 @@ namespace OpenSaaS\Subify\Repositories\Eloquent\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitFactory;
 use OpenSaaS\Subify\Entities\Benefit as BenefitEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Casts\Interval;
@@ -22,7 +21,6 @@ use OpenSaaS\Subify\Repositories\Eloquent\Models\Casts\Interval;
 class Benefit extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $casts = [
         'periodicity' => Interval::class,

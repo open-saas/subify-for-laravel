@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\BenefitUsageFactory;
 use OpenSaaS\Subify\Entities\BenefitUsage as BenefitUsageEntity;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasSubscriberIdentifier;
@@ -26,7 +25,6 @@ class BenefitUsage extends Model
 {
     use HasFactory;
     use HasSubscriberIdentifier;
-    use SoftDeletes;
 
     protected $casts = [
         'expired_at' => 'datetime',

@@ -5,7 +5,6 @@ namespace OpenSaaS\Subify\Repositories\Eloquent\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanFactory;
 use OpenSaaS\Subify\Entities\Plan as PlanEntity;
 
@@ -20,7 +19,6 @@ use OpenSaaS\Subify\Entities\Plan as PlanEntity;
 class Plan extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = [
         'name',
