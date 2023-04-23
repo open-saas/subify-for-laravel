@@ -12,8 +12,7 @@ return new class() extends Migration {
             $table->string('name')->unique();
             $table->boolean('is_consumable')->default(false);
             $table->boolean('is_quota')->default(false);
-            $table->integer('periodicity')->nullable();
-            $table->string('periodicity_unit')->nullable();
+            $table->string('periodicity')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

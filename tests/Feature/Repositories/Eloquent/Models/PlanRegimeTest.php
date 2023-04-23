@@ -25,12 +25,9 @@ class PlanRegimeTest extends TestCase
             'plan_id' => $plan->id,
             'name' => 'Test Plan Regime',
             'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'day',
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+            'grace' => \DateInterval::createFromDateString('1 month'),
+            'trial' => \DateInterval::createFromDateString('1 month'),
         ]);
 
         $this->assertDatabaseHas('plan_regimes', [
@@ -38,12 +35,9 @@ class PlanRegimeTest extends TestCase
             'plan_id' => $plan->id,
             'name' => $planRegime->name,
             'price' => $planRegime->price,
-            'periodicity' => $planRegime->periodicity,
-            'periodicity_unit' => $planRegime->periodicity_unit,
-            'grace' => $planRegime->grace,
-            'grace_unit' => $planRegime->grace_unit,
-            'trial' => $planRegime->trial,
-            'trial_unit' => $planRegime->trial_unit,
+            'periodicity' => 'P0Y1M0DT0H0M0S',
+            'grace' => 'P0Y1M0DT0H0M0S',
+            'trial' => 'P0Y1M0DT0H0M0S',
         ]);
     }
 
@@ -59,112 +53,22 @@ class PlanRegimeTest extends TestCase
     public function testItBelongsToAPlan(): void
     {
         $plan = Plan::factory()->create();
-
-        $planRegime = PlanRegime::create([
-            'plan_id' => $plan->id,
-            'name' => 'Test Plan Regime',
-            'price' => 100,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
-            'grace' => 1,
-            'grace_unit' => 'day',
-            'trial' => 1,
-            'trial_unit' => 'day',
-        ]);
+        $planRegime = PlanRegime::create(['plan_id' => $plan->id]);
 
         $this->assertEquals($plan->id, $planRegime->plan->id);
-    }
-
-    /**
-     * @dataProvider periodicityUnitProvider
-     */
-    public function testItCastsPeriodicityUnit(PeriodicityUnit $unit): void
-    {
-        $planRegime = PlanRegime::factory()
-            ->create(['periodicity_unit' => $unit]);
-
-        $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->periodicity_unit);
-        $this->assertEquals($unit->value, $planRegime->periodicity_unit->value);
-    }
-
-    public function testItThrowExceptionWhenPeriodicityUnitIsInvalid(): void
-    {
-        $this->expectException(\ValueError::class);
-
-        PlanRegime::factory()->create(['periodicity_unit' => 'invalid']);
-    }
-
-    /**
-     * @dataProvider periodicityUnitProvider
-     */
-    public function testItCastsGraceUnit(PeriodicityUnit $unit): void
-    {
-        $planRegime = PlanRegime::factory()
-            ->create(['grace_unit' => $unit]);
-
-        $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->grace_unit);
-        $this->assertEquals($unit->value, $planRegime->grace_unit->value);
-    }
-
-    public function testItThrowExceptionWhenGraceUnitIsInvalid(): void
-    {
-        $this->expectException(\ValueError::class);
-
-        PlanRegime::factory()->create(['grace_unit' => 'invalid']);
-    }
-
-    /**
-     * @dataProvider periodicityUnitProvider
-     */
-    public function testItCastsTrialUnit(PeriodicityUnit $unit): void
-    {
-        $planRegime = PlanRegime::factory()
-            ->create(['trial_unit' => $unit]);
-
-        $this->assertInstanceOf(PeriodicityUnit::class, $planRegime->trial_unit);
-        $this->assertEquals($unit->value, $planRegime->trial_unit->value);
-    }
-
-    public function testItThrowExceptionWhenTrialUnitIsInvalid(): void
-    {
-        $this->expectException(\ValueError::class);
-
-        PlanRegime::factory()->create(['trial_unit' => 'invalid']);
-    }
-
-    public static function periodicityUnitProvider(): array
-    {
-        return [
-            'day' => [PeriodicityUnit::Day],
-            'week' => [PeriodicityUnit::Week],
-            'month' => [PeriodicityUnit::Month],
-            'year' => [PeriodicityUnit::Year],
-        ];
     }
 
     public function testItHasAMethodToConvertToEntity(): void
     {
         $planRegime = PlanRegime::factory()->create();
 
-        $expectedPeriodicity = \DateInterval::createFromDateString(
-            "{$planRegime->periodicity} {$planRegime->periodicity_unit->value}"
-        );
-
-        $expectedGrace = \DateInterval::createFromDateString(
-            "{$planRegime->grace} {$planRegime->grace_unit->value}"
-        );
-
-        $expectedTrial = \DateInterval::createFromDateString(
-            "{$planRegime->trial} {$planRegime->trial_unit->value}"
-        );
-
         $entity = $planRegime->toEntity();
 
         $this->assertEquals($planRegime->id, $entity->getId());
         $this->assertEquals($planRegime->plan_id, $entity->getPlanId());
-        $this->assertEquals($expectedPeriodicity, $entity->getPeriodicity());
-        $this->assertEquals($expectedGrace, $entity->getGrace());
-        $this->assertEquals($expectedTrial, $entity->getTrial());
+        $this->assertEquals($planRegime->periodicity, $entity->getPeriodicity());
+        $this->assertEquals($planRegime->grace, $entity->getGrace());
+        $this->assertEquals($planRegime->trial, $entity->getTrial());
     }
 
     public function testItPassesNullPeriodicityGraceAndTrialToEntity(): void
@@ -172,11 +76,8 @@ class PlanRegimeTest extends TestCase
         $planRegime = PlanRegime::factory()
             ->create([
                 'periodicity' => null,
-                'periodicity_unit' => null,
                 'grace' => null,
-                'grace_unit' => null,
                 'trial' => null,
-                'trial_unit' => null,
             ]);
 
         $entity = $planRegime->toEntity();

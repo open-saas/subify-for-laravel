@@ -17,12 +17,9 @@ class PlanRegimeFactory extends Factory
             'plan_id' => Plan::factory(),
             'name' => $this->faker->words(asText: true),
             'price' => $this->faker->randomFloat(2, 0, 100),
-            'periodicity' => $this->faker->numberBetween(1, 12),
-            'periodicity_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
-            'grace' => $this->faker->numberBetween(1, 12),
-            'grace_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
-            'trial' => $this->faker->numberBetween(1, 12),
-            'trial_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
+            'periodicity' => new \DateInterval('P0Y1M0DT0H0M0S'),
+            'grace' => new \DateInterval('P0Y1M0DT0H0M0S'),
+            'trial' => new \DateInterval('P0Y1M0DT0H0M0S'),
         ];
     }
 }

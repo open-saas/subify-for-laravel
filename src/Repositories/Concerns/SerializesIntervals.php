@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSaaS\Subify\Repositories\Cache\Concerns;
+namespace OpenSaaS\Subify\Repositories\Concerns;
 
 trait SerializesIntervals
 {

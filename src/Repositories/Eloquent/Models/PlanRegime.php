@@ -8,20 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenSaaS\Subify\Database\Factories\PlanRegimeFactory;
 use OpenSaaS\Subify\Entities\PlanRegime as PlanRegimeEntity;
-use OpenSaaS\Subify\Enums\PeriodicityUnit;
-use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasPeriodicityFields;
+use OpenSaaS\Subify\Repositories\Eloquent\Models\Casts\Interval;
 
 /**
  * @property int                        $id
  * @property int                        $plan_id
  * @property string                     $name
  * @property float                      $price
- * @property int                        $periodicity
- * @property PeriodicityUnit            $periodicity_unit
- * @property int                        $grace
- * @property PeriodicityUnit            $grace_unit
- * @property int                        $trial
- * @property PeriodicityUnit            $trial_unit
+ * @property ?\DateInterval             $periodicity
+ * @property ?\DateInterval             $grace
+ * @property ?\DateInterval             $trial
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property \Illuminate\Support\Carbon $deleted_at
@@ -29,13 +25,12 @@ use OpenSaaS\Subify\Repositories\Eloquent\Models\Concerns\HasPeriodicityFields;
 class PlanRegime extends Model
 {
     use HasFactory;
-    use HasPeriodicityFields;
     use SoftDeletes;
 
     protected $casts = [
-        'periodicity_unit' => PeriodicityUnit::class,
-        'grace_unit' => PeriodicityUnit::class,
-        'trial_unit' => PeriodicityUnit::class,
+        'periodicity' => Interval::class,
+        'grace' => Interval::class,
+        'trial' => Interval::class,
     ];
 
     protected $fillable = [
@@ -43,11 +38,8 @@ class PlanRegime extends Model
         'name',
         'price',
         'periodicity',
-        'periodicity_unit',
         'grace',
-        'grace_unit',
         'trial',
-        'trial_unit',
     ];
 
     public function plan(): BelongsTo
@@ -68,9 +60,9 @@ class PlanRegime extends Model
         return new PlanRegimeEntity(
             $this->id,
             $this->plan_id,
-            $this->periodicityToDateInterval($this->periodicity_unit, $this->periodicity),
-            $this->periodicityToDateInterval($this->grace_unit, $this->grace),
-            $this->periodicityToDateInterval($this->trial_unit, $this->trial),
+            $this->periodicity,
+            $this->grace,
+            $this->trial,
         );
     }
 

@@ -12,12 +12,9 @@ return new class() extends Migration {
             $table->foreignId('plan_id')->constrained(config('subify.repositories.eloquent.plan.table'));
             $table->string('name')->unique()->nullable();
             $table->decimal('price', 8, 2)->nullable();
-            $table->integer('periodicity')->nullable();
-            $table->string('periodicity_unit')->nullable();
-            $table->integer('grace')->nullable();
-            $table->string('grace_unit')->nullable();
-            $table->integer('trial')->nullable();
-            $table->string('trial_unit')->nullable();
+            $table->string('periodicity')->nullable();
+            $table->string('grace')->nullable();
+            $table->string('trial')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

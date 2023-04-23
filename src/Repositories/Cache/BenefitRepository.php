@@ -8,7 +8,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use OpenSaaS\Subify\Contracts\Cache\BenefitRepository as CacheBenefitRepository;
 use OpenSaaS\Subify\Entities\Benefit;
 use OpenSaaS\Subify\Repositories\Cache\Concerns\HandlesPrefix;
-use OpenSaaS\Subify\Repositories\Cache\Concerns\SerializesIntervals;
+use OpenSaaS\Subify\Repositories\Concerns\SerializesIntervals;
 
 class BenefitRepository implements CacheBenefitRepository
 {

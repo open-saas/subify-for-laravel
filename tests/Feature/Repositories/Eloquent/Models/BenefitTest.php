@@ -21,8 +21,7 @@ class BenefitTest extends TestCase
             'name' => 'Test Benefit',
             'is_consumable' => true,
             'is_quota' => false,
-            'periodicity' => 1,
-            'periodicity_unit' => 'month',
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
         ]);
 
         $this->assertDatabaseHas('benefits', [
@@ -30,8 +29,7 @@ class BenefitTest extends TestCase
             'name' => $benefit->name,
             'is_consumable' => $benefit->is_consumable,
             'is_quota' => $benefit->is_quota,
-            'periodicity' => $benefit->periodicity,
-            'periodicity_unit' => $benefit->periodicity_unit,
+            'periodicity' => 'P0Y1M0DT0H0M0S',
         ]);
     }
 
@@ -44,51 +42,18 @@ class BenefitTest extends TestCase
         $this->assertSoftDeleted($benefit);
     }
 
-    /**
-     * @dataProvider periodicityUnitProvider
-     */
-    public function testItCastsPeriodicityUnit(PeriodicityUnit $unit): void
-    {
-        $benefit = Benefit::factory()
-            ->create(['periodicity_unit' => $unit]);
-
-        $this->assertInstanceOf(PeriodicityUnit::class, $benefit->periodicity_unit);
-        $this->assertEquals($unit->value, $benefit->periodicity_unit->value);
-    }
-
-    public function testItThrowExceptionWhenPeriodicityUnitIsInvalid(): void
-    {
-        $this->expectException(\ValueError::class);
-
-        Benefit::factory()->create(['periodicity_unit' => 'invalid']);
-    }
-
-    public static function periodicityUnitProvider(): array
-    {
-        return [
-            'day' => [PeriodicityUnit::Day],
-            'week' => [PeriodicityUnit::Week],
-            'month' => [PeriodicityUnit::Month],
-            'year' => [PeriodicityUnit::Year],
-        ];
-    }
-
     public function testItHasAMethodToConvertToEntity(): void
     {
         /** @var Benefit $benefit */
         $benefit = Benefit::factory()->create();
         $benefitEntity = $benefit->toEntity();
 
-        $expectedPeriodicity = \DateInterval::createFromDateString(
-            "{$benefit->periodicity} {$benefit->periodicity_unit->value}"
-        );
-
         $this->assertInstanceOf(BenefitEntity::class, $benefitEntity);
         $this->assertEquals($benefit->id, $benefitEntity->getId());
         $this->assertEquals($benefit->name, $benefitEntity->getName());
         $this->assertEquals($benefit->is_consumable, $benefitEntity->isConsumable());
         $this->assertEquals($benefit->is_quota, $benefitEntity->isQuota());
-        $this->assertEquals($expectedPeriodicity, $benefitEntity->getPeriodicity());
+        $this->assertEquals($benefit->periodicity, $benefitEntity->getPeriodicity());
     }
 
     public function testItHandlesNullPeriodicityWhenConvertingToEntity(): void
@@ -102,6 +67,6 @@ class BenefitTest extends TestCase
         $this->assertEquals($benefit->name, $benefitEntity->getName());
         $this->assertEquals($benefit->is_consumable, $benefitEntity->isConsumable());
         $this->assertEquals($benefit->is_quota, $benefitEntity->isQuota());
-        $this->assertNull($benefitEntity->getPeriodicity());
+        $this->assertEquals($benefit->periodicity, $benefitEntity->getPeriodicity());
     }
 }

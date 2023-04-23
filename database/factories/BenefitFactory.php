@@ -16,8 +16,7 @@ class BenefitFactory extends Factory
             'name' => $this->faker->words(asText: true),
             'is_consumable' => $this->faker->boolean(),
             'is_quota' => $this->faker->boolean(),
-            'periodicity' => $this->faker->numberBetween(1, 12),
-            'periodicity_unit' => $this->faker->randomElement(PeriodicityUnit::cases()),
+            'periodicity' => new \DateInterval('P0Y1M0DT0H0M0S'),
         ];
     }
 }
