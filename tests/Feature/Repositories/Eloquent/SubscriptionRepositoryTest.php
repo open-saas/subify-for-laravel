@@ -162,4 +162,30 @@ class SubscriptionRepositoryTest extends TestCase
             'trial_ended_at' => $subscription->trial_ended_at,
         ]);
     }
+
+    public function testFindActiveReturnsLastStartedSubscription(): void
+    {
+        $unwantedSubscription = Subscription::factory()
+            ->create([
+                'expired_at' => now()->addDay(),
+                'started_at' => now()->subDays(2),
+            ]);
+
+        $wantedSubscription = Subscription::factory()
+            ->create([
+                'subscriber_type' => $unwantedSubscription->subscriber_type,
+                'subscriber_id' => $unwantedSubscription->subscriber_id,
+                'expired_at' => now()->addDay(),
+                'started_at' => now()->subDay(),
+            ]);
+
+        $subscriptionIdentifier = $wantedSubscription->subscriber_type
+            .':'
+            .$wantedSubscription->subscriber_id;
+
+        $this->assertEquals(
+            $wantedSubscription->toEntity(),
+            $this->repository->findActive($subscriptionIdentifier),
+        );
+    }
 }
