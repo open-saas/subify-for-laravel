@@ -6,14 +6,20 @@ use Mockery\LegacyMockInterface;
 use OpenSaaS\Subify\Contracts\Decorators\BenefitDecorator;
 use OpenSaaS\Subify\Contracts\Decorators\BenefitPlanDecorator;
 use OpenSaaS\Subify\Contracts\Decorators\BenefitUsageDecorator;
+use OpenSaaS\Subify\Contracts\Decorators\PlanDecorator;
+use OpenSaaS\Subify\Contracts\Decorators\PlanRegimeDecorator;
 use OpenSaaS\Subify\Contracts\Decorators\SubscriptionDecorator;
 use OpenSaaS\Subify\Entities\BenefitUsage;
+use OpenSaaS\Subify\Exceptions\AlreadySubscribedException;
 use OpenSaaS\Subify\Exceptions\CantConsumeException;
+use OpenSaaS\Subify\Exceptions\SubscriptionCannotBeRenewedException;
 use OpenSaaS\Subify\SubscriptionManager;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\BenefitFixture;
 use Tests\Fixtures\BenefitPlanFixture;
 use Tests\Fixtures\BenefitUsageFixture;
+use Tests\Fixtures\PlanFixture;
+use Tests\Fixtures\PlanRegimeFixture;
 use Tests\Fixtures\SubscriptionFixture;
 
 /**
@@ -27,6 +33,10 @@ class SubscriptionManagerTest extends TestCase
 
     private LegacyMockInterface|BenefitUsageDecorator $benefitUsageDecorator;
 
+    private LegacyMockInterface|PlanDecorator $planDecorator;
+
+    private LegacyMockInterface|PlanRegimeDecorator $planRegimeDecorator;
+
     private LegacyMockInterface|SubscriptionDecorator $subscriptionDecorator;
 
     private SubscriptionManager $subscriptionManager;
@@ -38,12 +48,16 @@ class SubscriptionManagerTest extends TestCase
         $this->benefitDecorator = \Mockery::mock(BenefitDecorator::class);
         $this->benefitPlanDecorator = \Mockery::mock(BenefitPlanDecorator::class);
         $this->benefitUsageDecorator = \Mockery::mock(BenefitUsageDecorator::class);
+        $this->planDecorator = \Mockery::mock(PlanDecorator::class);
+        $this->planRegimeDecorator = \Mockery::mock(PlanRegimeDecorator::class);
         $this->subscriptionDecorator = \Mockery::mock(SubscriptionDecorator::class);
 
         $this->subscriptionManager = new SubscriptionManager(
             $this->benefitDecorator,
             $this->benefitPlanDecorator,
             $this->benefitUsageDecorator,
+            $this->planDecorator,
+            $this->planRegimeDecorator,
             $this->subscriptionDecorator,
         );
     }
@@ -698,9 +712,6 @@ class SubscriptionManagerTest extends TestCase
 
     public function testFlushContextCallsAllDecorators(): void
     {
-        $this->subscriptionDecorator
-            ->shouldReceive('flushContext');
-
         $this->benefitDecorator
             ->shouldReceive('flushContext');
 
@@ -710,8 +721,397 @@ class SubscriptionManagerTest extends TestCase
         $this->benefitUsageDecorator
             ->shouldReceive('flushContext');
 
+        $this->planDecorator
+            ->shouldReceive('flushContext');
+
+        $this->planRegimeDecorator
+            ->shouldReceive('flushContext');
+
+        $this->subscriptionDecorator
+            ->shouldReceive('flushContext');
+
         $this->subscriptionManager->flushContext();
 
         $this->assertTrue(true);
+    }
+
+    public function testSubscribeToCreatesSubscription(): void
+    {
+        $startDate = new \DateTimeImmutable();
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create([
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+        ]);
+
+        $expectedExpiration = $planRegime->calculateNextExpiration($startDate);
+        $expectedGraceEnd = $planRegime->calculateNextGraceEnd($expectedExpiration);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('find')
+            ->with('subscriber-identifier')
+            ->andReturnNull();
+
+        $this->planDecorator
+            ->shouldReceive('assertExists')
+            ->with($plan->getId());
+
+        $this->planRegimeDecorator
+            ->shouldReceive('findOrFail')
+            ->with($planRegime->getId())
+            ->andReturn($planRegime);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('create')
+            ->withArgs(
+                fn (
+                    string $subscriberIdentifier,
+                    int $planId,
+                    int $planRegimeId,
+                    \DateTimeInterface $startDate,
+                    ?\DateTimeInterface $expiration,
+                    ?\DateTimeInterface $graceEnd,
+                    ?\DateTimeInterface $trialEnd,
+                ): bool => 'subscriber-identifier' === $subscriberIdentifier
+                    and $plan->getId() === $planId
+                    and $planRegime->getId() === $planRegimeId
+                    and $startDate->getTimestamp() === $startDate->getTimestamp()
+                    and $expectedExpiration->getTimestamp() === $expiration->getTimestamp()
+                    and $expectedGraceEnd->getTimestamp() === $graceEnd->getTimestamp()
+                    and null === $trialEnd
+            );
+
+        $this->subscriptionManager->subscribeTo(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+            $startDate,
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testSubscribeToThrowsExceptionIfAlreadySubscribed(): void
+    {
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create();
+
+        $this->planDecorator
+            ->shouldNotReceive('assertExists');
+
+        $this->subscriptionDecorator
+            ->shouldReceive('find')
+            ->with('subscriber-identifier')
+            ->andReturn(
+                SubscriptionFixture::create([
+                    'planId' => $plan->getId(),
+                    'planRegimeId' => $planRegime->getId(),
+                    'expiredAt' => null,
+                ])
+            );
+
+        $this->planRegimeDecorator
+            ->shouldNotReceive('findOrFail');
+
+        $this->subscriptionDecorator
+            ->shouldNotReceive('create');
+
+        $this->expectException(AlreadySubscribedException::class);
+
+        $this->subscriptionManager->subscribeTo(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testTryPlanCreatesSubscription(): void
+    {
+        $startDate = new \DateTimeImmutable();
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create([
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+        ]);
+
+        $expectedTrialEnd = $planRegime->calculateNextTrialEnd($startDate);
+        $expectedGraceEnd = $planRegime->calculateNextGraceEnd($expectedTrialEnd);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('find')
+            ->with('subscriber-identifier')
+            ->andReturnNull();
+
+        $this->planDecorator
+            ->shouldReceive('assertExists')
+            ->with($plan->getId());
+
+        $this->planRegimeDecorator
+            ->shouldReceive('findOrFail')
+            ->with($planRegime->getId())
+            ->andReturn($planRegime);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('create')
+            ->withArgs(
+                fn (
+                    string $subscriberIdentifier,
+                    int $planId,
+                    int $planRegimeId,
+                    \DateTimeInterface $startDate,
+                    ?\DateTimeInterface $expiration,
+                    ?\DateTimeInterface $graceEnd,
+                    ?\DateTimeInterface $trialEnd,
+                ): bool => 'subscriber-identifier' === $subscriberIdentifier
+                    and $plan->getId() === $planId
+                    and $planRegime->getId() === $planRegimeId
+                    and $startDate->getTimestamp() === $startDate->getTimestamp()
+                    and $expectedTrialEnd->getTimestamp() === $expiration->getTimestamp()
+                    and $expectedGraceEnd->getTimestamp() === $graceEnd->getTimestamp()
+                    and $expectedTrialEnd->getTimestamp() === $trialEnd->getTimestamp()
+            );
+
+        $this->subscriptionManager->tryPlan(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+            $startDate,
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testTryPlanThrowsExceptionIfAlreadySubscribed(): void
+    {
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create();
+
+        $this->planDecorator
+            ->shouldNotReceive('assertExists');
+
+        $this->subscriptionDecorator
+            ->shouldReceive('find')
+            ->with('subscriber-identifier')
+            ->andReturn(
+                SubscriptionFixture::create([
+                    'planId' => $plan->getId(),
+                    'planRegimeId' => $planRegime->getId(),
+                    'expiredAt' => null,
+                ])
+            );
+
+        $this->planRegimeDecorator
+            ->shouldNotReceive('findOrFail');
+
+        $this->subscriptionDecorator
+            ->shouldNotReceive('create');
+
+        $this->expectException(AlreadySubscribedException::class);
+
+        $this->subscriptionManager->tryPlan(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testSwitchToWithImmediatelyFalse(): void
+    {
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create([
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+        ]);
+
+        $subscription = SubscriptionFixture::create([
+            'planId' => $plan->getId(),
+            'planRegimeId' => $planRegime->getId(),
+            'expiredAt' => (new \DateTimeImmutable())->modify('+1 month'),
+        ]);
+
+        $expectedStartDate = $subscription->getExpiredAt();
+        $expectedExpiration = $planRegime->calculateNextExpiration($subscription->getExpiredAt());
+        $expectedGraceEnd = $planRegime->calculateNextGraceEnd($expectedExpiration);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('findOrFail')
+            ->with('subscriber-identifier')
+            ->andReturn($subscription);
+
+        $this->planDecorator
+            ->shouldReceive('assertExists')
+            ->with($plan->getId());
+
+        $this->planRegimeDecorator
+            ->shouldReceive('findOrFail')
+            ->with($planRegime->getId())
+            ->andReturn($planRegime);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('create')
+            ->withArgs(
+                fn (
+                    string $subscriberIdentifier,
+                    int $planId,
+                    int $planRegimeId,
+                    \DateTimeInterface $startDate,
+                    ?\DateTimeInterface $expiration,
+                    ?\DateTimeInterface $graceEnd,
+                    ?\DateTimeInterface $trialEnd,
+                ): bool => 'subscriber-identifier' === $subscriberIdentifier
+                    and $plan->getId() === $planId
+                    and $planRegime->getId() === $planRegimeId
+                    and $startDate->getTimestamp() === $expectedStartDate->getTimestamp()
+                    and $expectedExpiration->getTimestamp() === $expiration->getTimestamp()
+                    and $expectedGraceEnd->getTimestamp() === $graceEnd->getTimestamp()
+                    and null === $trialEnd
+            );
+
+        $this->subscriptionManager->switchTo(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+            false,
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testSwitchToWithImmediatelyTrue(): void
+    {
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create([
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+        ]);
+
+        $subscription = SubscriptionFixture::create([
+            'planId' => $plan->getId(),
+            'planRegimeId' => $planRegime->getId(),
+            'expiredAt' => (new \DateTimeImmutable())->modify('+1 month'),
+        ]);
+
+        $expectedStartDate = new \DateTimeImmutable();
+        $expectedExpiration = $planRegime->calculateNextExpiration($expectedStartDate);
+        $expectedGraceEnd = $planRegime->calculateNextGraceEnd($expectedExpiration);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('findOrFail')
+            ->with('subscriber-identifier')
+            ->andReturn($subscription);
+
+        $this->planDecorator
+            ->shouldReceive('assertExists')
+            ->with($plan->getId());
+
+        $this->planRegimeDecorator
+            ->shouldReceive('findOrFail')
+            ->with($planRegime->getId())
+            ->andReturn($planRegime);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('create')
+            ->withArgs(
+                fn (
+                    string $subscriberIdentifier,
+                    int $planId,
+                    int $planRegimeId,
+                    \DateTimeInterface $startDate,
+                    ?\DateTimeInterface $expiration,
+                    ?\DateTimeInterface $graceEnd,
+                    ?\DateTimeInterface $trialEnd,
+                ): bool => 'subscriber-identifier' === $subscriberIdentifier
+                    and $plan->getId() === $planId
+                    and $planRegime->getId() === $planRegimeId
+                    and $startDate->getTimestamp() === $expectedStartDate->getTimestamp()
+                    and $expectedExpiration->getTimestamp() === $expiration->getTimestamp()
+                    and $expectedGraceEnd->getTimestamp() === $graceEnd->getTimestamp()
+                    and null === $trialEnd
+            );
+
+        $this->subscriptionManager->switchTo(
+            'subscriber-identifier',
+            $plan->getId(),
+            $planRegime->getId(),
+            true,
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testRenew(): void
+    {
+        $plan = PlanFixture::create();
+        $planRegime = PlanRegimeFixture::create([
+            'periodicity' => \DateInterval::createFromDateString('1 month'),
+        ]);
+
+        $subscription = SubscriptionFixture::create([
+            'planId' => $plan->getId(),
+            'planRegimeId' => $planRegime->getId(),
+            'expiredAt' => (new \DateTimeImmutable())->modify('+1 month'),
+        ]);
+
+        $expectedStartDate = $subscription->getExpiredAt();
+        $expectedExpiration = $planRegime->calculateNextExpiration($subscription->getExpiredAt());
+        $expectedGraceEnd = $planRegime->calculateNextGraceEnd($expectedExpiration);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('findOrFail')
+            ->with('subscriber-identifier')
+            ->andReturn($subscription);
+
+        $this->planDecorator
+            ->shouldReceive('assertExists')
+            ->with($plan->getId());
+
+        $this->planRegimeDecorator
+            ->shouldReceive('findOrFail')
+            ->with($planRegime->getId())
+            ->andReturn($planRegime);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('create')
+            ->withArgs(
+                fn (
+                    string $subscriberIdentifier,
+                    int $planId,
+                    int $planRegimeId,
+                    \DateTimeInterface $startDate,
+                    ?\DateTimeInterface $expiration,
+                    ?\DateTimeInterface $graceEnd,
+                    ?\DateTimeInterface $trialEnd,
+                ): bool => 'subscriber-identifier' === $subscriberIdentifier
+                    and $plan->getId() === $planId
+                    and $planRegime->getId() === $planRegimeId
+                    and $startDate->getTimestamp() === $expectedStartDate->getTimestamp()
+                    and $expectedExpiration->getTimestamp() === $expiration->getTimestamp()
+                    and $expectedGraceEnd->getTimestamp() === $graceEnd->getTimestamp()
+                    and null === $trialEnd
+            );
+
+        $this->subscriptionManager->renew(
+            'subscriber-identifier',
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function testRenewWithInactiveSubscription(): void
+    {
+        $subscription = SubscriptionFixture::create([
+            'expiredAt' => (new \DateTimeImmutable())->modify('-1 month'),
+        ]);
+
+        $this->subscriptionDecorator
+            ->shouldReceive('findOrFail')
+            ->with('subscriber-identifier')
+            ->andReturn($subscription);
+
+        $this->expectException(SubscriptionCannotBeRenewedException::class);
+
+        $this->subscriptionManager->renew(
+            'subscriber-identifier',
+        );
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Repositories\Eloquent;
 
+use OpenSaaS\Subify\Database\Factories\SubscriptionFactory;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 use OpenSaaS\Subify\Repositories\Eloquent\SubscriptionRepository;
 use Tests\Feature\TestCase;
+use Tests\Fixtures\SubscriptionFixture;
 
 /**
  * @internal
@@ -133,5 +135,31 @@ class SubscriptionRepositoryTest extends TestCase
             .$subscription->subscriber_id;
 
         $this->assertNull($this->repository->findActive($subscriptionIdentifier));
+    }
+
+    public function testInsert(): void
+    {
+        $subscription = Subscription::factory()->make();
+
+        $this->repository->insert(
+            $subscription->subscriber_type . ':' . $subscription->subscriber_id,
+            $subscription->plan_id,
+            $subscription->plan_regime_id,
+            $subscription->started_at,
+            $subscription->expired_at,
+            $subscription->grace_ended_at,
+            $subscription->trial_ended_at,
+        );
+
+        $this->assertDatabaseHas('subscriptions', [
+            'subscriber_type' => $subscription->subscriber_type,
+            'subscriber_id' => $subscription->subscriber_id,
+            'plan_id' => $subscription->plan_id,
+            'plan_regime_id' => $subscription->plan_regime_id,
+            'started_at' => $subscription->started_at,
+            'expired_at' => $subscription->expired_at,
+            'grace_ended_at' => $subscription->grace_ended_at,
+            'trial_ended_at' => $subscription->trial_ended_at,
+        ]);
     }
 }
