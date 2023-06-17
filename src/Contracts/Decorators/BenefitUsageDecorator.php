@@ -12,5 +12,5 @@ interface BenefitUsageDecorator extends Decorator
 
     public function save(BenefitUsage $benefitUsage): void;
 
-    public function create(string $subscriberIdentifier, int $benefitId, float $amount, ?\DateTimeImmutable $expiration): void;
+    public function create(string $subscriberIdentifier, int $benefitId, float $amount, ?\DateTimeInterface $expiration): void;
 }

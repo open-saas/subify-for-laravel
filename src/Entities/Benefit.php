@@ -4,7 +4,7 @@ namespace OpenSaaS\Subify\Entities;
 
 use OpenSaaS\Subify\Entities\Concerns\CalculatesRecurrence;
 
-final class Benefit
+class Benefit
 {
     use CalculatesRecurrence;
 

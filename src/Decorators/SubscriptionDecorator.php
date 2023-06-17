@@ -8,6 +8,7 @@ use OpenSaaS\Subify\Contracts\Context\SubscriptionRepository as ContextSubscript
 use OpenSaaS\Subify\Contracts\Database\SubscriptionRepository as DatabaseSubscriptionRepository;
 use OpenSaaS\Subify\Contracts\Decorators\SubscriptionDecorator as SubscriptionDecoratorContract;
 use OpenSaaS\Subify\Entities\Subscription;
+use OpenSaaS\Subify\Exceptions\SubscriptionNotFoundException;
 
 class SubscriptionDecorator implements SubscriptionDecoratorContract
 {
@@ -46,11 +47,18 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
     {
         if ($this->cacheSubscriptionRepository->has($subscriberIdentifier)) {
             $subscription = $this->cacheSubscriptionRepository->find($subscriberIdentifier);
-        } else {
-            $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
-            $this->cacheSubscriptionRepository->save($subscription);
+            $this->contextSubscriptionRepository->save($subscription);
+
+            return;
         }
 
+        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
+
+        if (empty($subscription)) {
+            return;
+        }
+
+        $this->cacheSubscriptionRepository->save($subscription);
         $this->contextSubscriptionRepository->save($subscription);
     }
 
@@ -58,6 +66,47 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
     {
         $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
 
+        if (!empty($subscription)) {
+            $this->contextSubscriptionRepository->save($subscription);
+        }
+    }
+
+    public function findOrFail(string $subscriberIdentifier): Subscription
+    {
+        $subscription = $this->find($subscriberIdentifier);
+
+        if (empty($subscription)) {
+            throw new SubscriptionNotFoundException();
+        }
+
+        return $subscription;
+    }
+
+    public function create(
+        string $subscriberIdentifier,
+        int $planId,
+        int $planRegimeId,
+        \DateTimeInterface $startDate,
+        ?\DateTimeInterface $expiration,
+        ?\DateTimeInterface $graceEnd,
+        ?\DateTimeInterface $trialEnd,
+    ): Subscription {
+        $subscription = $this->databaseSubscriptionRepository->insert(
+            $subscriberIdentifier,
+            $planId,
+            $planRegimeId,
+            $startDate,
+            $expiration,
+            $graceEnd,
+            $trialEnd,
+        );
+
         $this->contextSubscriptionRepository->save($subscription);
+
+        if ($this->isCacheEnabled()) {
+            $this->cacheSubscriptionRepository->save($subscription);
+        }
+
+        return $subscription;
     }
 }

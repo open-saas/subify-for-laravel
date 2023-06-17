@@ -16,7 +16,7 @@ class SubscriptionFactory extends Factory
         return [
             'plan_id' => Plan::factory(),
             'plan_regime_id' => PlanRegime::factory(),
-            'subscriber_id' => $this->faker->randomNumber(),
+            'subscriber_id' => $this->faker->numerify(),
             'subscriber_type' => $this->faker->word(),
             'grace_ended_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),
             'trial_ended_at' => $this->faker->dateTimeBetween('+1 month', '+1 year'),

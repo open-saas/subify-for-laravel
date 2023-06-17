@@ -2,7 +2,7 @@
 
 namespace OpenSaaS\Subify\Entities;
 
-final class Subscription
+class Subscription
 {
     public function __construct(
         private int $id,

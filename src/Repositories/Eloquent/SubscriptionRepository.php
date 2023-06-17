@@ -31,4 +31,28 @@ class SubscriptionRepository implements DatabaseSubscriptionRepository
             ->first()
             ?->toEntity();
     }
+
+    public function insert(
+        string $subscriberIdentifier,
+        int $planId,
+        int $planRegimeId,
+        \DateTimeInterface $startDate,
+        ?\DateTimeInterface $expiration,
+        ?\DateTimeInterface $graceEnd,
+        ?\DateTimeInterface $trialEnd,
+    ): SubscriptionEntity {
+        $subscription = $this->model->newInstance([
+            'plan_id' => $planId,
+            'plan_regime_id' => $planRegimeId,
+            'started_at' => $startDate,
+            'expired_at' => $expiration,
+            'grace_ended_at' => $graceEnd,
+            'trial_ended_at' => $trialEnd,
+        ]);
+
+        $subscription->setSubscriberIdentifier($subscriberIdentifier);
+        $subscription->save();
+
+        return $subscription->toEntity();
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace OpenSaaS\Subify\Entities;
 
-final class BenefitPlan
+class BenefitPlan
 {
     public function __construct(
         private int $id,

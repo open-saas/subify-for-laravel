@@ -44,7 +44,7 @@ class BenefitUsageDecorator implements BenefitUsageDecoratorContract
         return $this->contextBenefitUsageRepository->find($subscriberIdentifier, $benefitId);
     }
 
-    public function create(string $subscriberIdentifier, int $benefitId, float $amount, ?\DateTimeImmutable $expiration): void
+    public function create(string $subscriberIdentifier, int $benefitId, float $amount, ?\DateTimeInterface $expiration): void
     {
         $benefitUsage = $this->databaseBenefitUsageRepository->insert(
             $subscriberIdentifier,

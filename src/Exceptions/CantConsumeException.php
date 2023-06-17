@@ -2,6 +2,6 @@
 
 namespace OpenSaaS\Subify\Exceptions;
 
-final class CantConsumeException extends \OverflowException
+class CantConsumeException extends \OverflowException
 {
 }
