@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Repositories\Eloquent;
 
-use OpenSaaS\Subify\Database\Factories\SubscriptionFactory;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Subscription;
 use OpenSaaS\Subify\Repositories\Eloquent\SubscriptionRepository;
 use Tests\Feature\TestCase;
-use Tests\Fixtures\SubscriptionFixture;
 
 /**
  * @internal
@@ -142,7 +140,7 @@ class SubscriptionRepositoryTest extends TestCase
         $subscription = Subscription::factory()->make();
 
         $this->repository->insert(
-            $subscription->subscriber_type . ':' . $subscription->subscriber_id,
+            $subscription->subscriber_type.':'.$subscription->subscriber_id,
             $subscription->plan_id,
             $subscription->plan_regime_id,
             $subscription->started_at,

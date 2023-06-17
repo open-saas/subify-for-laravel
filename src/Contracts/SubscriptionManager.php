@@ -22,32 +22,32 @@ interface SubscriptionManager
     public function flushContext(): void;
 
     /**
-     * @throws AlreadySubscribedException if the subscriber already has an active subscription
-     * @throws PlanNotFoundException if the plan does not exist
+     * @throws AlreadySubscribedException  if the subscriber already has an active subscription
+     * @throws PlanNotFoundException       if the plan does not exist
      * @throws PlanRegimeNotFoundException if the plan regime does not exist
      */
     public function subscribeTo(
         string $subscriberIdentifier,
         int $planId,
         int $planRegimeId,
-        \DateTimeInterface $startDate = new \DateTime,
+        \DateTimeInterface $startDate = new \DateTime(),
     ): void;
 
     /**
-     * @throws AlreadySubscribedException if the subscriber already has an active subscription
-     * @throws PlanNotFoundException if the plan does not exist
+     * @throws AlreadySubscribedException  if the subscriber already has an active subscription
+     * @throws PlanNotFoundException       if the plan does not exist
      * @throws PlanRegimeNotFoundException if the plan regime does not exist
      */
     public function tryPlan(
         string $subscriberIdentifier,
         int $planId,
         int $planRegimeId,
-        \DateTimeInterface $startDate = new \DateTime,
+        \DateTimeInterface $startDate = new \DateTime(),
     ): void;
 
     /**
-     * @throws PlanNotFoundException if the plan does not exist
-     * @throws PlanRegimeNotFoundException if the plan regime does not exist
+     * @throws PlanNotFoundException         if the plan does not exist
+     * @throws PlanRegimeNotFoundException   if the plan regime does not exist
      * @throws SubscriptionNotFoundException if the plan regime does not exist
      */
     public function switchTo(

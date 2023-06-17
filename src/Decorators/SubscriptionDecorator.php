@@ -38,39 +38,6 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
         $this->contextSubscriptionRepository->flush();
     }
 
-    private function isCacheEnabled(): bool
-    {
-        return $this->configRepository->get('subify.repositories.cache.subscription.enabled');
-    }
-
-    private function loadWithCache(string $subscriberIdentifier): void
-    {
-        if ($this->cacheSubscriptionRepository->has($subscriberIdentifier)) {
-            $subscription = $this->cacheSubscriptionRepository->find($subscriberIdentifier);
-            $this->contextSubscriptionRepository->save($subscription);
-
-            return;
-        }
-
-        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
-
-        if (empty($subscription)) {
-            return;
-        }
-
-        $this->cacheSubscriptionRepository->save($subscription);
-        $this->contextSubscriptionRepository->save($subscription);
-    }
-
-    private function loadWithoutCache(string $subscriberIdentifier): void
-    {
-        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
-
-        if (!empty($subscription)) {
-            $this->contextSubscriptionRepository->save($subscription);
-        }
-    }
-
     public function findOrFail(string $subscriberIdentifier): Subscription
     {
         $subscription = $this->find($subscriberIdentifier);
@@ -108,5 +75,38 @@ class SubscriptionDecorator implements SubscriptionDecoratorContract
         }
 
         return $subscription;
+    }
+
+    private function isCacheEnabled(): bool
+    {
+        return $this->configRepository->get('subify.repositories.cache.subscription.enabled');
+    }
+
+    private function loadWithCache(string $subscriberIdentifier): void
+    {
+        if ($this->cacheSubscriptionRepository->has($subscriberIdentifier)) {
+            $subscription = $this->cacheSubscriptionRepository->find($subscriberIdentifier);
+            $this->contextSubscriptionRepository->save($subscription);
+
+            return;
+        }
+
+        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
+
+        if (empty($subscription)) {
+            return;
+        }
+
+        $this->cacheSubscriptionRepository->save($subscription);
+        $this->contextSubscriptionRepository->save($subscription);
+    }
+
+    private function loadWithoutCache(string $subscriberIdentifier): void
+    {
+        $subscription = $this->databaseSubscriptionRepository->findActive($subscriberIdentifier);
+
+        if (!empty($subscription)) {
+            $this->contextSubscriptionRepository->save($subscription);
+        }
     }
 }

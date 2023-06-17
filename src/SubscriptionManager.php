@@ -12,7 +12,6 @@ use OpenSaaS\Subify\Contracts\SubscriptionManager as SubscriptionManagerContract
 use OpenSaaS\Subify\Exceptions\AlreadySubscribedException;
 use OpenSaaS\Subify\Exceptions\CantConsumeException;
 use OpenSaaS\Subify\Exceptions\SubscriptionCannotBeRenewedException;
-use OpenSaaS\Subify\Exceptions\SubscriptionNotFoundException;
 
 class SubscriptionManager implements SubscriptionManagerContract
 {
@@ -122,7 +121,7 @@ class SubscriptionManager implements SubscriptionManagerContract
         string $subscriberIdentifier,
         int $planId,
         int $planRegimeId,
-        \DateTimeInterface $startDate = new \DateTime,
+        \DateTimeInterface $startDate = new \DateTime(),
     ): void {
         $subscription = $this->subscriptionDecorator->find($subscriberIdentifier);
 
@@ -152,7 +151,7 @@ class SubscriptionManager implements SubscriptionManagerContract
         string $subscriberIdentifier,
         int $planId,
         int $planRegimeId,
-        \DateTimeInterface $startDate = new \DateTime,
+        \DateTimeInterface $startDate = new \DateTime(),
     ): void {
         $subscription = $this->subscriptionDecorator->find($subscriberIdentifier);
 
@@ -189,7 +188,7 @@ class SubscriptionManager implements SubscriptionManagerContract
         $planRegime = $this->planRegimeDecorator->findOrFail($planRegimeId);
         $subscription = $this->subscriptionDecorator->findOrFail($subscriberIdentifier);
 
-        $startDate = $immediately ? new \DateTime : $subscription->getExpiredAt();
+        $startDate = $immediately ? new \DateTime() : $subscription->getExpiredAt();
 
         $expiration = $planRegime->calculateNextExpiration($startDate);
         $graceEnd = $planRegime->calculateNextGraceEnd($expiration);
