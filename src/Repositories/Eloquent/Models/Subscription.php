@@ -117,7 +117,8 @@ class Subscription extends Model
     protected static function booted()
     {
         static::addGlobalScope('expirableWithGraceAndTrial', function (Builder $builder) {
-            $builder->where('started_at', '<=', now())
+            $builder->orderByDesc('started_at')
+                ->where('started_at', '<=', now())
                 ->where(
                     fn (Builder $query) => $query->whereNull('expired_at')
                         ->orWhere('expired_at', '>', now())
