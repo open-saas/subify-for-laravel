@@ -7,14 +7,14 @@ use Illuminate\Support\ServiceProvider;
 class SubifyServiceProvider extends ServiceProvider
 {
     public array $bindings = [
-        Contracts\Context\BenefitPlanRepository::class => Repositories\Context\BenefitPlanRepository::class,
-        Contracts\Context\BenefitRepository::class => Repositories\Context\BenefitRepository::class,
-        Contracts\Context\BenefitUsageRepository::class => Repositories\Context\BenefitUsageRepository::class,
-        Contracts\Context\SubscriptionRepository::class => Repositories\Context\SubscriptionRepository::class,
         Contracts\Cache\BenefitPlanRepository::class => Repositories\Cache\BenefitPlanRepository::class,
         Contracts\Cache\BenefitRepository::class => Repositories\Cache\BenefitRepository::class,
         Contracts\Cache\BenefitUsageRepository::class => Repositories\Cache\BenefitUsageRepository::class,
         Contracts\Cache\SubscriptionRepository::class => Repositories\Cache\SubscriptionRepository::class,
+        Contracts\Context\BenefitPlanRepository::class => Repositories\Context\BenefitPlanRepository::class,
+        Contracts\Context\BenefitRepository::class => Repositories\Context\BenefitRepository::class,
+        Contracts\Context\BenefitUsageRepository::class => Repositories\Context\BenefitUsageRepository::class,
+        Contracts\Context\SubscriptionRepository::class => Repositories\Context\SubscriptionRepository::class,
         Contracts\Database\BenefitPlanRepository::class => Repositories\Eloquent\BenefitPlanRepository::class,
         Contracts\Database\BenefitRepository::class => Repositories\Eloquent\BenefitRepository::class,
         Contracts\Database\BenefitUsageRepository::class => Repositories\Eloquent\BenefitUsageRepository::class,

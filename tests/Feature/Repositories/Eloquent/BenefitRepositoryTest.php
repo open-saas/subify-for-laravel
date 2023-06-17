@@ -1,6 +1,6 @@
 <?php
 
-namespace Repositories\Eloquent;
+namespace Tests\Feature\Repositories\Eloquent;
 
 use OpenSaaS\Subify\Repositories\Eloquent\BenefitRepository;
 use OpenSaaS\Subify\Repositories\Eloquent\Models\Benefit;

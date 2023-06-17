@@ -1,6 +1,6 @@
 <?php
 
-namespace Repositories\Eloquent;
+namespace Tests\Feature\Repositories\Eloquent;
 
 use Carbon\Carbon;
 use OpenSaaS\Subify\Entities\BenefitUsage as BenefitUsageEntity;
