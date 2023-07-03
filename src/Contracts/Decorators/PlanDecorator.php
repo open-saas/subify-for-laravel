@@ -7,8 +7,6 @@ use OpenSaaS\Subify\Exceptions\PlanNotFoundException;
 
 interface PlanDecorator extends Decorator
 {
-    public function find(int $planId): ?Plan;
-
     /**
      * @throws PlanNotFoundException
      */
